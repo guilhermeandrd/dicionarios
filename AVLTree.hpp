@@ -103,20 +103,22 @@ public:
     * @param k chave que serah inserida
     * 
     * @param v valor que serah inserido junto com a chave
+    * 
+    * @return True se e somente se o par tiver sido inserido
     */
-    void insert(Key k, Value v) {
+    void insert(Key k, Value v){
         m_root = _insert(m_root, k, v);
     }
 
     /**
-     * @brief funcao que atualiza um par se ele existir, mudando seu valor. caso nao, retorna um erro.
+     * @brief busca o nó e o atualiza caso exista, caso nao, eh lancada uma excecao.
      * 
-     * @param k chave do par a ser atualizado
+     * @param k chave do noh a ser procurado
      * 
-     * @param v novo valor
+     * @param v novo valor do par
      */
     void update(Key k, Value v){
-        if(!_update(m_root,k, v)){ //se for atualizado, retorna true, que eh falso e nao entra, se for, retorna false, que vira true e entra
+        if(!_update(m_root, k , v)){
             throw std::out_of_range("chave nao existe na arvore");
         }
     }
@@ -365,7 +367,7 @@ private:
 
     /**
      * @brief Funcao privada recrusiva que insere um nodo na arvore. Caso o noh seja repetido,
-     *        nao fazemos nada. Caso tenha tido algum desbalanceamento, a arvore eh regulada
+     *        nada é feito. Caso tenha tido algum desbalanceamento, a arvore eh regulada
      *        usando o fixUpNode.
      * 
      * @param node raiz da arvore na qual sera feita a insercao
@@ -376,46 +378,57 @@ private:
      * 
      * @return raiz para a nova arvore agora com o elemento inserido.
      */
-    Node *_insert(Node *node, Key k, Value v) {
+    Node*_insert(Node *node, Key k, Value v) {
+
         if (node == nullptr){ // Caso base 1: árvore vazia
             this->m_size++;
-
+            
             return new Node(k, v, 1, nullptr, nullptr);
         } 
         
         this->m_counter_comparator++;
         if (node->n_pair.first == k) { // Caso base 2: achei um nó repetido
             
+            //encerra a insercao
             return node;
         }
-
+        
         this->m_counter_comparator++;
         if (k < node->n_pair.first){ // Caso geral
             node->left = _insert(node->left, k, v);
         } else {
             node->right = _insert(node->right, k, v);
         }
-
+        
         // código do retorna das chamadas recursivas
         node = fixup_node(node, k);   
         return node;
     }
-
-    /**
-     * @brief
+    
+    /** 
+     * @brief funcao recursiva que busca um nó e o atualiza se ele existir. caso nao exista
+     *        é retornado false.
      * 
-     * @param
+     * @param k chave do nó a ser procurado
      * 
-     * @param
+     * @param v novo valor do nó
+     * 
+     * @return True se e somente se o par tiver sido atualizado
      */
-    bool _update(Node *node, Key k, Value v){
-
-        //noh nao existe na arvore
-        if(node == nullptr ) return false;
+    bool _update(Node* node, Key k, Value v){
         
+        // Caso de parada:
+        // a chave nao existe
+        if(node == nullptr) {
+            return false;
+        }
+
+        // Caso de parada:
+        //achei ou não achei a chave
         this->m_counter_comparator++;
-        //achei o noh e o atualizo
-        if( node->n_pair.first == k) {
+        if(node->n_pair.first == k) {
+            
+            //atualiza o valor
             node->n_pair.second = v;
             return true;
         }
@@ -429,7 +442,8 @@ private:
             return _update(node->right, k, v);
         }
     }
-    
+
+
     /**
      * @brief Função que recebe um ponteiro para a raiz de uma árvore e verifica se é necessário fazer algum reblanaceamento nele.
      * Essa função também recalcula a altura do nó.
@@ -440,7 +454,7 @@ private:
      * 
      * @return raiz da arvore agora balanceada
      */
-    Node *fixup_node(Node *node, Key k) { //TODO deixar isso comentado direito dps
+    Node *fixup_node(Node *node, Key k) {
         int bal = balance(node);
         
         if(bal < -1){
@@ -533,12 +547,18 @@ private:
      * @return o noh se for achado, ou nullptr se ele nao existir
      */
     Node *contains(Node *node, Key k) {
-        // Caso de parada: achei ou não achei a chave
-        this->m_counter_comparator++;
-
-        if(node == nullptr || node->n_pair.first == k) {
+        
+        // Caso de parada: a chave nao existe
+        if(node == nullptr){
             return node;
         }
+        
+        //Caso de parada: achei a chave
+        this->m_counter_comparator++;
+        if(node->n_pair.first == k) {
+            return node;
+        }
+
         // Caso geral: ainda nao achei 
         // e ainda tem arvore para percorrer
         this->m_counter_comparator++;

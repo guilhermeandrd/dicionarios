@@ -113,14 +113,16 @@ public:
     /**
      * @brief funcao insert que insere um par de chave e valor na arvore. aqui criamos o noh a ser inserido 
      *        e chamos outra funcao que o realmente insere ao mesmo tempo que chama outras que regulam a arvore.
-     *        todo noh que eh inserido comeca com a cor vermelha.
+     *        todo noh que eh inserido comeca com a cor vermelha. cas o noh ja exista, o atualizamos e retornamos false.
      * 
      * @param k:= chave do par a ser inserido
      * @param v:= valor do par a ser inserido
+     * 
+     * @return True se e somente se o noh tiver sido inserido.
      */
-    void insert(Key k, Value v){
+    bool insert(Key k, Value v){
         Node *novo = new Node(k, v, RED, nullptr,nullptr, nullptr); //cria novo node a ser inserido como
-        _insert(novo);
+        return _insert(novo);
     }
    
     /**
@@ -179,42 +181,6 @@ public:
 
         return p != nil;
     }
-
-    /**
-     * @brief procura aquele nó com aquela chave e o atualiza com o valor passado, 
-     *        caso o nó exista. caso não, retorna um erro de não existência do nó.
-     * 
-     * @param k chave a ser procurada o noh
-     * 
-     * @param v valor a ser atualizado
-     */
-    void update(Key k, Value v){
-        Node*p = root;
-
-        while(p != nil && p->n_pair.first!=k){
-            //incrementa sempre por conta do while
-            this->m_counter_comparator++;
-            
-            if(k < p->n_pair.first){
-                this->m_counter_comparator++;
-
-                p = p->left;
-            }else{
-                this->m_counter_comparator++;
-
-                p = p->right;
-            }
-
-        }
-
-        if(p!=nil){
-            p->n_pair.second = v;
-        }else{
-            throw std::out_of_range("chave nao existe na arvore");
-        }
-
-    }
-
 
     /**
      * @brief faz uma busca pelo noh atraves de sua chave e retorna uma referencia
@@ -422,7 +388,7 @@ private:
      * @param z noh que ja foi previamente criado
      * 
      */
-    void _insert(Node* z){
+    bool _insert(Node* z){
         Node* x = this->root;
         Node* y = this->nil;
 
@@ -440,9 +406,12 @@ private:
                 //se nao eh maior e nem menor eh igual                
                 this->m_counter_comparator+=2;
 
+                //atualizamos o valor
+                x->n_pair.second = z->n_pair.second;
+
                 delete z; //z nao vai ser usado, liberamos sua memoria
 
-                return;
+                return false;
             }
         }
 
@@ -467,6 +436,7 @@ private:
         
         insertFixup(z);
         m_size++;
+        return true;
     }
 
     /**

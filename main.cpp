@@ -89,21 +89,26 @@ int main() {
     TreeRbTeste.show();
 
     //SIZES
-    cout << TreeAvlTESTE.size() << " " << TreeRbTeste.size() << " " << hashOpenTESTE.size() << " " << hashEncTESTE.size();
+    cout << TreeAvlTESTE.size() << " " << TreeRbTeste.size() << " " << hashOpenTESTE.size() << " " 
+    << hashEncTESTE.size() << endl;
 
     //TESTE DO CLEAR
     insereArvore(dadosDeTeste, TreeAvlTESTE);
     insereArvore(dadosDeTeste, TreeRbTeste);
     insereTabela(dadosDeTeste, hashOpenTESTE);
     insereTabela(dadosDeTeste, hashEncTESTE);
-    TreeAvlTESTE.clear();
-    TreeRbTeste.clear();
-    hashEncTESTE.clear();
-    hashOpenTESTE.clear();
+    //TreeAvlTESTE.clear();
+    //TreeRbTeste.clear();
+    //hashEncTESTE.clear();
+    //hashOpenTESTE.clear();
 
-    cout << hashEncTESTE << endl << hashOpenTESTE;
+    cout << "tabela hash encadeada: "  << endl << "\n" << hashEncTESTE << endl
+    << "tabela hash aberta:" << endl << "\n" << hashOpenTESTE;
 
+    cout << "arvore avl: " << endl << "\n";
     TreeAvlTESTE.show();
+
+    cout << "arvore rubro negra: " << endl << "\n";
     TreeRbTeste.show();
 
 
@@ -116,7 +121,7 @@ int main() {
     //TESTE DO TAMANHO
 
     //TESTE DO ITERADOR PARA TABELAS
-    cout << "comparacoes:" << endl
+    /*cout << "comparacoes:" << endl
     << "rubro negra: " << TreeRbTeste.counter_comparator() << endl
     << "avl: " << TreeAvlTESTE.counter_comparator() << endl
     << "hash aberto: " << hashOpenTESTE.counter_comparator() << endl
@@ -126,22 +131,22 @@ int main() {
     << "rb" << TreeRbTeste.counter_rotation() << endl
     << "avl" << TreeAvlTESTE.counter_rotation() << endl
     << "opem: " << hashOpenTESTE.counter_collision() << endl
-    << "enc: " << hashEncTESTE.counterCollision() << endl;
+    << "enc: " << hashEncTESTE.counterCollision() << endl;*/
 
     insereArvore(dadosDeTeste, TreeRbTeste);
-    TreeRbTeste.show();
+    //TreeRbTeste.show();
 
-    TreeRbTeste.update(5, "Farmacia");
+    TreeRbTeste.insert(5, "Farmacia");
 
-    TreeRbTeste.show();
+    //TreeRbTeste.show();
 
     insereArvore(dadosDeTeste, TreeAvlTESTE);
-
+    //TreeAvlTESTE.show();
     TreeAvlTESTE.update(5, "Zoologia");
 
-    TreeAvlTESTE.show();
+    //TreeAvlTESTE.show();
 
-    TreeAvlTESTE.update(288, "error");
+    //TreeAvlTESTE.update(288, "error");
 
     return 0;
 }
