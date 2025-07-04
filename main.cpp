@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 #include "ChainedHashTable.hpp"
 #include "OpenHashTable.hpp"
@@ -46,19 +47,22 @@ int main() {
     AvlTree<int, string> TreeAvlTESTE;
     RBtree<int, string> TreeRbTeste;
 
+    //inicializamos com os dados do teste
     insereArvore(dadosDeTeste, TreeAvlTESTE);
     insereArvore(dadosDeTeste, TreeRbTeste);
     insereTabela(dadosDeTeste, hashOpenTESTE);
     insereTabela(dadosDeTeste, hashEncTESTE);
 
     //TESTE DE INSERCOES
+    //as imprimos para ver se estao corretas
     cout << hashEncTESTE;
     cout << endl;
     cout << hashOpenTESTE;
     cout << endl;
     TreeAvlTESTE.show();
     TreeRbTeste.show();
-    
+
+    //metricas 
     cout << "comparacoes:" << endl
     << "rubro negra: " << TreeRbTeste.counter_comparator() << endl
     << "avl: " << TreeAvlTESTE.counter_comparator() << endl
@@ -79,12 +83,14 @@ int main() {
 
 
     //TESTE DO REMOVE
+    //remove todos os elementos das estruturas
+    //tem que ficar vazias apos esse teste
     removeClass(dadosDeTeste, TreeAvlTESTE);
     removeClass(dadosDeTeste, TreeRbTeste);
     removeClass(dadosDeTeste, hashEncTESTE);
     removeClass(dadosDeTeste, hashOpenTESTE);
-    cout << hashEncTESTE << endl << hashOpenTESTE;
 
+    cout << hashEncTESTE << endl << hashOpenTESTE;
     TreeAvlTESTE.show();
     TreeRbTeste.show();
 
@@ -93,14 +99,17 @@ int main() {
     << hashEncTESTE.size() << endl;
 
     //TESTE DO CLEAR
+    //as impressoes devem ficam vazias apos esse teste
+    
+    //a inicializamos novamente para os testes
     insereArvore(dadosDeTeste, TreeAvlTESTE);
     insereArvore(dadosDeTeste, TreeRbTeste);
     insereTabela(dadosDeTeste, hashOpenTESTE);
     insereTabela(dadosDeTeste, hashEncTESTE);
-    //TreeAvlTESTE.clear();
-    //TreeRbTeste.clear();
-    //hashEncTESTE.clear();
-    //hashOpenTESTE.clear();
+    TreeAvlTESTE.clear();
+    TreeRbTeste.clear();
+    hashEncTESTE.clear();
+    hashOpenTESTE.clear();
 
     cout << "tabela hash encadeada: "  << endl << "\n" << hashEncTESTE << endl
     << "tabela hash aberta:" << endl << "\n" << hashOpenTESTE;
@@ -112,16 +121,37 @@ int main() {
     TreeRbTeste.show();
 
 
-    //TESTE DO UPDATE
+    //TESTE DO UPDATE PARA AS TABELAS
     insereTabela(dadosDeTeste, hashOpenTESTE);
     insereTabela(dadosDeTeste, hashEncTESTE);
     updateTabela(dadosDeTeste, hashEncTESTE);
     updateTabela(dadosDeTeste, hashOpenTESTE);
 
-    //TESTE DO TAMANHO
+    //TESTE DO UPDATE PARA AS ARVORES
+    //as inicaliza novamente
+    insereArvore(dadosDeTeste, TreeRbTeste);
+    insereArvore(dadosDeTeste, TreeAvlTESTE);
+
+    //atualiza o valor de chave 5
+    TreeRbTeste.insert(5, "Farmacia");
+    TreeRbTeste.show();
+
+    //atualiza o valor de chave 5
+    TreeAvlTESTE.update(5, "Zoologia");
+    TreeAvlTESTE.show();
+
+    //ESSA LINHA AQUI IRA RETORNAR ERRO SE TIVER CORRETAMENTE IMPLEMENTADO
+    //POIS NAO EXISTE UM PAR COM CHAVE 288
+    //TreeAvlTESTE.update(288, "error");
 
     //TESTE DO ITERADOR PARA TABELAS
-    /*cout << "comparacoes:" << endl
+    cout << hashOpenTESTE[5] << endl;
+    cout << hashEncTESTE[5] << endl;
+
+
+    
+    //CONTADORES E METRICAS FINAIS
+    cout << "comparacoes:" << endl
     << "rubro negra: " << TreeRbTeste.counter_comparator() << endl
     << "avl: " << TreeAvlTESTE.counter_comparator() << endl
     << "hash aberto: " << hashOpenTESTE.counter_comparator() << endl
@@ -131,34 +161,26 @@ int main() {
     << "rb" << TreeRbTeste.counter_rotation() << endl
     << "avl" << TreeAvlTESTE.counter_rotation() << endl
     << "opem: " << hashOpenTESTE.counter_collision() << endl
-    << "enc: " << hashEncTESTE.counterCollision() << endl;*/
+    << "enc: " << hashEncTESTE.counterCollision() << endl;
 
-    insereArvore(dadosDeTeste, TreeRbTeste);
-    //TreeRbTeste.show();
-
-    TreeRbTeste.insert(5, "Farmacia");
-
-    //TreeRbTeste.show();
-
-    insereArvore(dadosDeTeste, TreeAvlTESTE);
-    //TreeAvlTESTE.show();
-    TreeAvlTESTE.update(5, "Zoologia");
-
-    //TreeAvlTESTE.show();
-
-    //TreeAvlTESTE.update(288, "error");
+    
 
     return 0;
 }
 
 template <typename Key, typename Value, typename Arvore>
-
+/**
+ * @brief insere os valores do vetor na arvore passada, seja rubro negra ou avl
+ */
 void insereArvore(vector<pair<Key, Value>> vetor, Arvore &rb){
     for(auto& node : vetor){
         rb.insert(node.first, node.second);
     }
 }
 
+/**
+ * @brief insere os valores do vetor na tabela passada, seja qual tipo for
+ */
 template <typename Key, typename Value, typename Tabela>
 void insereTabela(vector<pair<Key, Value>> vetor, Tabela &rb){
     for(auto& node : vetor){
@@ -168,6 +190,12 @@ void insereTabela(vector<pair<Key, Value>> vetor, Tabela &rb){
 
 
 template <typename Key, typename Value, typename Class>
+/**
+ * @brief verifica se os elementos do vetor estão em um classe qualquer,
+ * para o teste dar certo, todos os elementos do vetor devem estar na classe.
+ * além disso, ele executa a função at da classe. testando o contains e at 
+ * ao mesmo tempo.
+ */
 void verificaConter(vector<pair<Key, Value>> vetor, Class teste){
     for(auto& node : vetor){
         if(!teste.contains(node.first)){
@@ -179,6 +207,10 @@ void verificaConter(vector<pair<Key, Value>> vetor, Class teste){
 }
 
 template <typename Key, typename Value, typename Class>
+/**
+ * @brief testa o remove da classe passando um vetor, se o elemento ainda
+ * existir apos a insercao, entao o remove nao foi implementado corretamente
+ */
 void removeClass(vector<pair<Key, Value>> vetor, Class &teste){
     for(auto& node : vetor){
         teste.remove(node.first);
@@ -189,6 +221,12 @@ void removeClass(vector<pair<Key, Value>> vetor, Class &teste){
 }
 
 template <typename Key, typename Value, typename Tabela>
+/**
+ * @brief testa o update da tabela, passando um vetor que adciona o elemento que ja existe.
+ * para dar certo, os elementos do vetor tem que estar todos ja inseridos na tabela.
+ * como ele nao vai inserir, no maximo atualizar, a funcao add ira retornar false 
+ * e nao ira imprimir o "deu erro".
+ */
 void updateTabela(vector<pair<Key, Value>> vetor, Tabela &teste){
     for(auto& node : vetor){
         if(teste.add(node.first, node.second)){
@@ -196,4 +234,3 @@ void updateTabela(vector<pair<Key, Value>> vetor, Tabela &teste){
         }
     }
 }
-
