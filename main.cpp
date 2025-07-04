@@ -71,9 +71,7 @@ int main() {
     << "opem: " << hashOpenTESTE.counter_collision() << endl
     << "enc: " << hashEncTESTE.counterCollision() << endl;
 
-    //TESTE DO CONTAINS
-    //TESTE DO AT
-    
+    //TESTE DO CONTAINS e TESTE DO AT
     verificaConter(dadosDeTeste, TreeRbTeste);
     verificaConter(dadosDeTeste, TreeAvlTESTE);
     verificaConter(dadosDeTeste, hashOpenTESTE);
@@ -81,8 +79,6 @@ int main() {
 
 
     //TESTE DO REMOVE
-
-
     removeClass(dadosDeTeste, TreeAvlTESTE);
     removeClass(dadosDeTeste, TreeRbTeste);
     removeClass(dadosDeTeste, hashEncTESTE);
@@ -131,6 +127,22 @@ int main() {
     << "avl" << TreeAvlTESTE.counter_rotation() << endl
     << "opem: " << hashOpenTESTE.counter_collision() << endl
     << "enc: " << hashEncTESTE.counterCollision() << endl;
+
+    insereArvore(dadosDeTeste, TreeRbTeste);
+    TreeRbTeste.show();
+
+    TreeRbTeste.update(5, "Farmacia");
+
+    TreeRbTeste.show();
+
+    insereArvore(dadosDeTeste, TreeAvlTESTE);
+
+    TreeAvlTESTE.update(5, "Zoologia");
+
+    TreeAvlTESTE.show();
+
+    TreeAvlTESTE.update(288, "error");
+
     return 0;
 }
 

@@ -98,15 +98,27 @@ public:
 
     /**  
     * @brief publica que insere o valor e sua chave,
-    *        caso a chave ja exista o noh eh atualizado
-    *        para o valor que foi passado
+    *        caso a chave ja exista, nada é feito.
     * 
     * @param k chave que serah inserida
     * 
-    * @param v valor que serah inserido junto com a chave //TODO ver sobre a atualizacao do update
+    * @param v valor que serah inserido junto com a chave
     */
     void insert(Key k, Value v) {
         m_root = _insert(m_root, k, v);
+    }
+
+    /**
+     * @brief funcao que atualiza um par se ele existir, mudando seu valor. caso nao, retorna um erro.
+     * 
+     * @param k chave do par a ser atualizado
+     * 
+     * @param v novo valor
+     */
+    void update(Key k, Value v){
+        if(!_update(m_root,k, v)){ //se for atualizado, retorna true, que eh falso e nao entra, se for, retorna false, que vira true e entra
+            throw std::out_of_range("chave nao existe na arvore");
+        }
     }
  
     /**
@@ -122,7 +134,7 @@ public:
     }
 
     /**
-     * @brief imprime a arvore em um formato mais amigavel
+     * @brief imprime a arvore em um formato mais amigavel. caso esteja vazia, imprime somente o nullptr como "#".
      */
     void show(){
         bshow(m_root, "");
@@ -353,7 +365,7 @@ private:
 
     /**
      * @brief Funcao privada recrusiva que insere um nodo na arvore. Caso o noh seja repetido,
-     *        ele eh atualizado. Caso tenha tido algum desbalanceamento, a arvore eh regulada
+     *        nao fazemos nada. Caso tenha tido algum desbalanceamento, a arvore eh regulada
      *        usando o fixUpNode.
      * 
      * @param node raiz da arvore na qual sera feita a insercao
@@ -373,9 +385,6 @@ private:
         
         this->m_counter_comparator++;
         if (node->n_pair.first == k) { // Caso base 2: achei um nó repetido
-
-            //atualizo o valor dele
-            node->n_pair.second = v;
             
             return node;
         }
@@ -388,10 +397,38 @@ private:
         }
 
         // código do retorna das chamadas recursivas
-        node = fixup_node(node, k);
+        node = fixup_node(node, k);   
         return node;
     }
 
+    /**
+     * @brief
+     * 
+     * @param
+     * 
+     * @param
+     */
+    bool _update(Node *node, Key k, Value v){
+
+        //noh nao existe na arvore
+        if(node == nullptr ) return false;
+        
+        this->m_counter_comparator++;
+        //achei o noh e o atualizo
+        if( node->n_pair.first == k) {
+            node->n_pair.second = v;
+            return true;
+        }
+
+        // Caso geral: ainda nao achei 
+        // e ainda tem arvore para percorrer
+        this->m_counter_comparator++;
+        if(k < node->n_pair.first){
+            return _update(node->left, k, v);
+        }else{
+            return _update(node->right, k, v);
+        }
+    }
     
     /**
      * @brief Função que recebe um ponteiro para a raiz de uma árvore e verifica se é necessário fazer algum reblanaceamento nele.
@@ -405,43 +442,40 @@ private:
      */
     Node *fixup_node(Node *node, Key k) { //TODO deixar isso comentado direito dps
         int bal = balance(node);
-        // Caso 1(a)
-
+        
         if(bal < -1){
-
+            
             this->m_counter_comparator++;
+            // Caso 1(a)
             if(k < node->left->n_pair.first){
                 return right_rotation(node);
                 
             }
-
+            
             this->m_counter_comparator++;
+            // Caso 1(b)
             if(k > node->left->n_pair.first){
-
                 node->left = left_rotation(node->left);
                 return right_rotation(node);
             }
-
         }
 
         if(bal > 1){
-
+            
             this->m_counter_comparator++;
+            // Caso 2(a)
             if(k > node->right->n_pair.first){
                 return left_rotation(node);
             }
 
             this->m_counter_comparator++;
+            // Caso 2(b)
             if(k < node->right->n_pair.first){
                 node->right = right_rotation(node->right);
                 return left_rotation(node);
             }
         }
-        // Caso 1(b)
         
-        // Caso 2(a)
-       
-        // Caso 2(b)
         // Caso node balanceado
         node->height = 1 + std::max(height(node->left), height(node->right));
         return node;

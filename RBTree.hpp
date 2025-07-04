@@ -181,6 +181,42 @@ public:
     }
 
     /**
+     * @brief procura aquele nó com aquela chave e o atualiza com o valor passado, 
+     *        caso o nó exista. caso não, retorna um erro de não existência do nó.
+     * 
+     * @param k chave a ser procurada o noh
+     * 
+     * @param v valor a ser atualizado
+     */
+    void update(Key k, Value v){
+        Node*p = root;
+
+        while(p != nil && p->n_pair.first!=k){
+            //incrementa sempre por conta do while
+            this->m_counter_comparator++;
+            
+            if(k < p->n_pair.first){
+                this->m_counter_comparator++;
+
+                p = p->left;
+            }else{
+                this->m_counter_comparator++;
+
+                p = p->right;
+            }
+
+        }
+
+        if(p!=nil){
+            p->n_pair.second = v;
+        }else{
+            throw std::out_of_range("chave nao existe na arvore");
+        }
+
+    }
+
+
+    /**
      * @brief faz uma busca pelo noh atraves de sua chave e retorna uma referencia
      * desse respectivo valor
      * 
@@ -249,15 +285,13 @@ public:
     }
 
     /**
-     * @brief imprime a rubro negra em formato amigavel (chave, valor) e do lado sua cor em formato de string
+     * @brief imprime a rubro negra em formato amigavel (chave, valor) e do lado sua cor em formato de string.
+     * Tambem imprime os nós nils. Caso esteja vazia, imprime somente o noh nil;
      */
     void show(){
 
-        if(empty()){
-            std::cout << "arvore vazia" << std::endl;
-        }
-
         rb_show(root, "");
+
     }
 
     /**
@@ -403,12 +437,11 @@ private:
 
                 x = x->right;
             } else{
-                //se nao eh maior e nem menor eh igual
-                //nesse caso eu soh atualizo com o valor que eu passei
-                x->n_pair.second = z->n_pair.second;
-                
+                //se nao eh maior e nem menor eh igual                
                 this->m_counter_comparator+=2;
-                delete z;
+
+                delete z; //z nao vai ser usado, liberamos sua memoria
+
                 return;
             }
         }
@@ -544,7 +577,16 @@ private:
 
     /**
      * @brief código de rb_transplant retirado do livro do Cornen.
-     * 
+     * usado para movimentar subárvores dentro da árvore rubro negra, que substitui uma subárvore como um 
+     * filho de seu pai por uma outra subárvore. Quando substitui a subárvore enraizada no nó u pela 
+     * subárvore enraizada no nó v, o pai do nó u torna​se o pai do nó v, e o pai de u acaba ficando 
+     * com v como seu filho adequado. O código r_transplant foi adaptado para lidar com arvore rubro negra 
+     * sem a desregular, tomando cuidados como: 
+     * 1 - referenciar o nil da arvore, em vez de NIL. O que o c++ faz implicitamente.
+     * 2 - a atribuição a .parent na linha 569 ocorre incondicionalmente, no algorimo do cornen: 
+     * podemos atribuir a v.parent mesmo que aponte para a sentinela. 
+     * Mas nesse código, tomamos cuidado para fazer isso quando v for diferente de nil, 
+     * pois //TODO ver isso aqui
      */
     void rb_transplat(Node* u, Node* v){
         if(u->parent == nil){
@@ -571,14 +613,27 @@ private:
         Node* x;
         bool  y_color_original = y->color;
 
+        //Caso 1(a):  Quando queremos eliminar o nó z e z nao tem o filho esquerdo, e 
+                    // z é removido da árvore e queremos que y seja z
         if(z->left == this->nil){
             x = z->right;
             rb_transplat(z, z->right);
+        //Caso 1(b):  Quando queremos eliminar o nó z e z nao tem o filho direito,
+                    // z é removido da árvore e queremos que y seja z
         }else if( z->right == this->nil){
             x = z->left;
             rb_transplat(z, z->left);
         }else{
+        //Caso 2 : Quando z tem dois filhos, y deve ser o sucessor de z , e y passa 
+                // para a posição de z na árvore
+
             y = minimum(z->right); //y eh igual a sucessor de z 
+
+            /*
+            Também lembramos a cor de y antes de ele ser eliminado da árvore ou passar para dentro dela, 
+            e rastreamos o nó x que passa para a posição original de y na árvore 
+            porque o nó x também poderia causar violações das propriedades vermelho-preto
+            */
 
             y_color_original = y->color;
             x = y->right;
@@ -601,9 +656,9 @@ private:
             removeFixup(x);
         }
 
-        delete z;
+        delete z; //desaloca a memoria daquele noh
 
-        m_size--;
+        m_size--; //diminui o size dessa rubro negra
     }
 
     /**
@@ -612,89 +667,90 @@ private:
      * 
      * @param x um dos filhos do noh que foi deletado
      */
-   void removeFixup(Node *x) {
-    while (x != root && x->color == BLACK) {
-        // Se x é um filho esquerdo
-        if (x == x->parent->left) {
-            Node *w = x->parent->right; // w é o irmão de x
+    void removeFixup(Node *x) {
+        while (x != root && x->color == BLACK) {
 
-            // Caso 1: irmão de x é vermelho
-            if (w->color == RED) {
-                w->color = BLACK;
-                x->parent->color = RED;
-                leftRotate(x->parent);
-                w = x->parent->right; // w agora é preto e passamos para os casos 2, 3 ou 4
-            }
+            //x é um filho esquerdo
+            if (x == x->parent->left) {
+                Node *w = x->parent->right; // w é o irmão de x
 
-            // Caso 2: irmão de x é preto e ambos os filhos de w são pretos
-            if (w->left->color == BLACK && w->right->color == BLACK) {
-                w->color = RED;
-                x = x->parent; // Move o problema para cima
-            } else {
-                // Caso 3: irmão de x é preto, filho esquerdo de w é vermelho, direito é preto
-                if (w->right->color == BLACK) {
-                    w->left->color = BLACK;
-                    w->color = RED;
-                    rightRotate(w);
-                    w = x->parent->right;
+                //caso 1: w é vermelho
+                if (w->color == RED) {
+                    w->color = BLACK;
+                    x->parent->color = RED;
+                    leftRotate(x->parent);
+                    w = x->parent->right; //w agora é preto e passamos para os casos 2, 3 ou 4
                 }
-                
-                // Caso 4: irmão de x é preto e seu filho direito é vermelho
-                w->color = x->parent->color;
-                x->parent->color = BLACK;
-                w->right->color = BLACK;
-                leftRotate(x->parent);
-                x = root; // Problema resolvido, força o fim do loop
-            }
-        } else { // Se x é um filho direito (lógica simétrica)
-            Node *w = x->parent->left; // w é o irmão de x
 
-            // Caso 1
-            if (w->color == RED) {
-                w->color = BLACK;
-                x->parent->color = RED;
-                rightRotate(x->parent);
-                w = x->parent->left;
-            }
-            
-            // Caso 2
-            if (w->right->color == BLACK && w->left->color == BLACK) {
-                w->color = RED;
-                x = x->parent;
-            } else {
-                // Caso 3
-                if (w->left->color == BLACK) {
-                    w->right->color = BLACK;
+                //caso 2: w é preto e ambos seus filhos são pretos
+                if (w->left->color == BLACK && w->right->color == BLACK) {
                     w->color = RED;
-                    leftRotate(w);
+                    x = x->parent; //joga o problema uma ancestral;
+                } else {
+                    //caso 3: w é preto, e seu filho esquerdo é vermelho, direito é preto
+                    if (w->right->color == BLACK) {
+                        w->left->color = BLACK;
+                        w->color = RED;
+                        rightRotate(w);
+                        w = x->parent->right;
+                    }
+                    
+                    //caso 4: w é preto e seu filho direito é vermelho
+                    w->color = x->parent->color;
+                    x->parent->color = BLACK;
+                    w->right->color = BLACK;
+                    leftRotate(x->parent);
+                    x = root; //problema resolvido, forçamos o fim do loop
+                }
+            } else { //se x é um filho direito (lógica simétrica)
+                Node *w = x->parent->left; // w é o irmão de x
+
+                // Caso 1
+                if (w->color == RED) {
+                    w->color = BLACK;
+                    x->parent->color = RED;
+                    rightRotate(x->parent);
                     w = x->parent->left;
                 }
                 
-                // Caso 4
-                w->color = x->parent->color;
-                x->parent->color = BLACK;
-                w->left->color = BLACK;
-                rightRotate(x->parent);
-                x = root;
+                //caso 2
+                if (w->right->color == BLACK && w->left->color == BLACK) {
+                    w->color = RED;
+                    x = x->parent;
+                } else {
+                    //caso 3
+                    if (w->left->color == BLACK) {
+                        w->right->color = BLACK;
+                        w->color = RED;
+                        leftRotate(w);
+                        w = x->parent->left;
+                    }
+                    
+                    //caso 4
+                    w->color = x->parent->color;
+                    x->parent->color = BLACK;
+                    w->left->color = BLACK;
+                    rightRotate(x->parent);
+                    x = root;
+                }
             }
         }
+
+        x->color = BLACK;
+
     }
-    x->color = BLACK;
-}
+
+
     /**
-     * @brief procura o sucessor de um noh e o retorna caso ele exista.
+     * @brief procura o minimo uma arvore e o retorna caso ele exista.
      * 
-     * @param node noh o qual vai ser buscado seu sucessor
+     * @param node raiz da arvore a qual vai ser buscada seu minimo
      * 
      * @return sucessor do noh 
      */
     Node* minimum(Node* node){
     
-        //na remocao na rubro negra
-        //soh esse cohdigo eh realmente executado, pois
-        //aqui so cai o caso onde ele tem os dois filhos
-        //logo ele tera o filho direito
-        //e esse algoritmo ira funcionar
+        
         while(node->left != nil){
             node = node->left;
         }
@@ -811,4 +867,4 @@ private:
     }
 };
 
-#endif //o
+#endif //END_RB_TREE_HPP
