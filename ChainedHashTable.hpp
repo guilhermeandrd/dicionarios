@@ -243,8 +243,8 @@ public:
         int slot = hash_code(k);
 
         for(auto p : m_table[slot]){
+            this->m_counter_comparator++;
             if(p.first == k){
-                this->m_counter_comparator++;
 
                 return false;
             }

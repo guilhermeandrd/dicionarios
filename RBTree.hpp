@@ -556,7 +556,8 @@ private:
      * 2 - a atribuição a .parent na linha 569 ocorre incondicionalmente, no algorimo do cornen: 
      * podemos atribuir a v.parent mesmo que aponte para a sentinela. 
      * Mas nesse código, tomamos cuidado para fazer isso quando v for diferente de nil, 
-     * pois //TODO ver isso aqui
+     * pois precisamos ter certeza que só vamos modificar o pai de 'v' se 'v' não for o sentinela.
+     * isso acontece porque na implementacao representamos "todos os nil" como um nil só
      */
     void rb_transplat(Node* u, Node* v){
         if(u->parent == nil){
@@ -606,10 +607,15 @@ private:
             */
 
             y_color_original = y->color;
+
             x = y->right;
 
             if(y->parent == z){
-                if(x != nil) x->parent = y; //TODO verificar o porque dessa verificacao
+
+                //caso especial onde x pode ser nil, e seu pai precisa ser
+                //corretamente apontado para y antes de y ser movido.
+                //isso acontece pois usamos apenas um nil para representar os nil da rubro negra
+                if(x != nil) x->parent = y;
             }else{
                 rb_transplat(y, y->right);
                 y->right = z->right;
