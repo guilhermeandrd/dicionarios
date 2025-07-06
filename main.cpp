@@ -12,6 +12,8 @@
 
 using namespace std;
 
+//modelos das funcoes de testes, feitas para os testes serem feitos de maneira mais
+//forte e rápida
 template <typename Key, typename Value, typename Arvore>
 void insereArvore(vector<pair<Key, Value>> vetor, Arvore &rb);
 
@@ -30,6 +32,7 @@ void updateTabela(vector<pair<Key, Value>> vetor, Tabela &teste);
 
 int main() {
     
+    //vetor com dados que serão usados no teste
     vector<pair<int, string>> dadosDeTeste = {
         {44, "Engenharia"}, {17, "Medicina"}, {88, "Direito"}, {32, "Fisica"}, {65, "Quimica"},
         {97, "Biologia"}, {28, "Historia"}, {54, "Geografia"}, {82, "Filosofia"}, {93, "Sociologia"},

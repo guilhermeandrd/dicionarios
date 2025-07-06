@@ -378,7 +378,70 @@ public:
     }
 
     //AS SOBRECARGAS FORAM FEITAS PARA MELHOR FUNCIONAMENTO DO CODIGO
+     Value& operator[](const Key& k){
+ Node*p = root;
 
+        while(p != nil && p->n_pair.first!=k){
+            //incrementa sempre por conta do while
+            this->m_counter_comparator++;
+            
+            if(k < p->n_pair.first){
+                this->m_counter_comparator++;
+
+                p = p->left;
+            }else{
+                this->m_counter_comparator++;
+
+                p = p->right;
+            }
+
+        }
+
+        //a chave existe
+        if (p != nil){
+            return p->n_pair.second;
+        }
+            //faz a insercao do noh
+        Node *z = new Node(k, Value(), RED, nullptr,nullptr, nullptr);        
+        Node* x = this->root;
+        Node* y = this->nil;
+
+        while (x!= this->nil){
+            y=x;
+            if (z->n_pair.first < x->n_pair.first){
+                this->m_counter_comparator++;
+                
+                x = x->left;
+            }else{
+                this->m_counter_comparator+=2;
+
+                x = x->right;
+            }
+        }
+
+        z->parent = y;
+
+        if (y == this->nil){
+            this->root = z;
+        }else if (z->n_pair.first < y->n_pair.first) {
+            this->m_counter_comparator++;
+
+            y->left = z;
+        }else{
+            this->m_counter_comparator++;
+
+            y->right = z;
+        }
+
+        z->left = this->nil;
+        z->right = this->nil;
+        z->color = RED;
+        
+        
+        insertFixup(z);
+        m_size++;
+
+        return z->n_pair.second;    }
 private:
 
     /**
