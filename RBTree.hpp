@@ -378,7 +378,7 @@ public:
     }
 
     //AS SOBRECARGAS FORAM FEITAS PARA MELHOR FUNCIONAMENTO DO CODIGO
-     Value& operator[](const Key& k){
+    Value& operator[](const Key& k){
         Node*p = root;
 
         while(p != nil && p->n_pair.first!=k){
@@ -441,7 +441,8 @@ public:
         insertFixup(z);
         m_size++;
 
-        return z->n_pair.second;    }
+        return z->n_pair.second;   
+    }
 private:
 
     /**
