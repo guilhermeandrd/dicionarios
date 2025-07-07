@@ -36,6 +36,29 @@ void lerArquivo( fstream &file, ChainedHashTable<Key, Value>& teste){
 
 }
 
+template <typename Key, typename Value>
+//TODO passar erro para quando nao der certo abrir o arquivo
+void lerArquivolento( fstream &file, ChainedHashTable<Key, Value>& teste){
+    string linha;
+    Key k;
+    
+    while(getline(file, linha)){
+        stringstream ss;
+        //stringstream ler linha
+        ss << linha;
+
+        //a separamos por chaves
+        while(ss >> k){
+            teste[k] = teste[k]+1;
+        }
+            
+
+    }
+
+    file.close();
+
+}
+
 int main() {
     
     //vetor com dados que serão usados no teste
@@ -64,14 +87,18 @@ int main() {
         TreeRbTeste.insert(node.first, node.second);
     }
     string name = "teste.txt";
-    TreeAvlTESTE.impressao();
     
     //agora teste de insercao atraves de um arquivo
     fstream file("bibliateste.txt", ios::in);
-    
     lerArquivo(file, hashEncTESTE);
     
-    cout << endl << hashEncTESTE["slay"] << endl;
+    ChainedHashTable<string, int> teslento;
+    fstream file2("bibilaateste2.txt", ios::in);
+
+    lerArquivolento(file2, teslento);
+
+    cout << hashEncTESTE.buscaint() << endl << teslento.buscaint();
+
     return 0;
 }
 

@@ -44,7 +44,7 @@ private:
     // Quando load_factor ultrapassa o valor de m_max_load_factor, 
     // eh preciso executar a operacao de rehashing.                   
     float m_max_load_factor;
-
+    int busca;
     // tabela                               
     std::vector<std::list<std::pair<Key,Value>>> m_table;
 
@@ -115,6 +115,7 @@ public:
 
         m_counter_comparator = 0;
         m_counter_collision = 0;
+        busca = 0;
     }
 
 
@@ -446,17 +447,20 @@ public:
         for(auto& par : m_table[slot]){
             if(par.first == k){
                 this->m_counter_comparator++;
-
+                busca++;
                 return par.second;
             }
         }
 
         m_table[slot].push_back({k, Value()});
         m_number_of_elements++;
+        busca++;
         return m_table[slot].back().second;
     }
 
-
+    int buscaint(){
+        return this->busca;
+    }
     /**
      * @brief Versao const da sobrecarga do operador de indexacao.
      * Se k corresponder a chave de um elemento na tabela, a funcao
