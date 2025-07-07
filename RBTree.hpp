@@ -376,14 +376,23 @@ public:
     bool operator==(const RBtree& outra) const{
         return ehIgual(root, outra.root);
     }
-
+    
     //AS SOBRECARGAS FORAM FEITAS PARA MELHOR FUNCIONAMENTO DO CODIGO
+    //TODO aparentemente tá certo
     Value& operator[](const Key& k){
-        Node*p = root;
 
+        //criação dos nós auxiliares
+        Node* p = root;
+        Node* y = this->nil;
+
+      
+        //PRIMEIRO PROCURA O NOH
+        //eu quero que ele procure o nó, se não achar
+        //ele já sabe onde deve ser inserido e então o insere
         while(p != nil && p->n_pair.first!=k){
             //incrementa sempre por conta do while
             this->m_counter_comparator++;
+            y = p;
             
             if(k < p->n_pair.first){
                 this->m_counter_comparator++;
@@ -401,47 +410,33 @@ public:
         if (p != nil){
             return p->n_pair.second;
         }
-            //faz a insercao do noh
-        Node *z = new Node(k, Value(), RED, nullptr,nullptr, nullptr);        
-        Node* x = this->root;
-        Node* y = this->nil;
 
-        while (x!= this->nil){
-            y=x;
-            if (z->n_pair.first < x->n_pair.first){
-                this->m_counter_comparator++;
-                
-                x = x->left;
-            }else{
-                this->m_counter_comparator+=2;
+        //NÃO EXISTE
+        //faz a insercao do noh
+        p = new Node(k, Value(), RED, nullptr,nullptr, nullptr);        
 
-                x = x->right;
-            }
-        }
-
-        z->parent = y;
-        //TODO pode ser melhorado
+        p->parent = y;
         if (y == this->nil){
-            this->root = z;
-        }else if (z->n_pair.first < y->n_pair.first) {
+            this->root = p;
+        }else if (p->n_pair.first < y->n_pair.first) {
             this->m_counter_comparator++;
 
-            y->left = z;
+            y->left = p;
         }else{
             this->m_counter_comparator++;
 
-            y->right = z;
+            y->right = p;
         }
 
-        z->left = this->nil;
-        z->right = this->nil;
-        z->color = RED;
+        p->left = this->nil;
+        p->right = this->nil;
+        p->color = RED;
         
         
-        insertFixup(z);
+        insertFixup(p);
         m_size++;
 
-        return z->n_pair.second;   
+        return p->n_pair.second;   
     }
 private:
 

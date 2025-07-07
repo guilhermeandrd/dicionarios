@@ -81,5 +81,9 @@ int main() {
         //TODO algoritmo de merge sort
 
     //E INSERE EM UM ARQUIVO DE SAÍDA
+
+    rb.remove("Beta");
+
+    rb.show();
     return 0;
 }
