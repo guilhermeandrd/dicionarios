@@ -121,10 +121,8 @@ public:
      * 
      * @param v novo valor do par
      */
-    void update(Key k, Value v){
-        if(!_update(m_root, k , v)){
-            throw std::out_of_range("chave nao existe na arvore");
-        }
+    bool update(Key k, Value v){
+        return _update(m_root, k , v);
     }
  
     /**
