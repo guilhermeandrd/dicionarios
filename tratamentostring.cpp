@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 
+#include <unicode/unistr.h>  // for UnicodeString
+#include <unicode/ustream.h> // for supporting output of UnicodeString
+#include <unicode/ucnv.h>    // For text file encoding conversions
 
 using namespace std;
 
@@ -17,6 +20,6 @@ int main() {
     hı́fen ser parte da palavra. Logo, neste caso, mostrá-lo seria uma entrada do
     dicionário.
     */
-    string teste1 = "TOP-SECRET file (located at C:\ Archives_2025 \ [Project_Janus]\log_007.txt) from Dr. Eva Rostova read: My team's main objective, as per directive {Alpha-9}, is to analyze the artifact; its cost is estimated at over $2,500,000! I've only got a 48-hour window (isn't that 'crazy'?) to get this done.";
+    string teste1 = "TOP-SECRET file (located at C: Archives_2025  [Project_Janus]log_007.txt) from Dr. Eva Rostova read: My team's main objective, as per directive {Alpha-9}, is to analyze the artifact; its cost is estimated at over $2,500,000! I've only got a 48-hour window (isn't that 'crazy'?) to get this done.";
     return 0;
 }
