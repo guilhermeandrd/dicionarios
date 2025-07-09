@@ -95,14 +95,13 @@ void lerArquivolento( fstream &file, ChainedHashTable<Key, Value>& teste){
 
 }
 
-template <typename Key, typename Value>
 //TODO passar erro para quando nao der certo abrir o arquivo
-void lerArquivo( fstream &file, RBtree<Key, Value>& teste){
+void lerArquivo( fstream &file, RBtree<string, int>& teste){
     string linha;
-    Key k;
+    string k;
     
     //CONFIGURAÇÃO DO UNICODE-SET
-    icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]");
+    icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:][']");
     UErrorCode status = U_ZERO_ERROR;
     icu::UnicodeSet wordChars(pattern, status);
     
@@ -110,18 +109,24 @@ void lerArquivo( fstream &file, RBtree<Key, Value>& teste){
         stringstream ss;
         //stringstream ler linha
         ss << linha;
-        
         //a separamos por chaves
         //fazemos tratamento de string
         while(ss >> k){
             icu::UnicodeString tratar = icu::UnicodeString::fromUTF8(k);
-
             icu::UnicodeString cleanWord;
-
+            cleanWord.findAndReplace("’", "'");
+            
             for (int32_t i = 0; i <tratar.length(); ++i) {
                 int32_t e = i + 1;
                 UChar32 ch = tratar.char32At(i);
                 UChar32 chAfter = tratar.char32At(e);
+                
+                //tratamento para smart quote
+
+                /* se a minha palavra tiver a substring "’"
+                entao eu a guardo
+                no final da iteração eu insiro onde ela deve ficar e ando quantos indici preicisar*/
+                
 
                 if (wordChars.contains(ch)){
                     cleanWord.append(ch);
@@ -132,9 +137,7 @@ void lerArquivo( fstream &file, RBtree<Key, Value>& teste){
                 if(ch=='-' && wordChars.contains(chAfter)){
                     cleanWord.append('-');
                 }
-                if(ch=='’' && wordChars.contains(chAfter))
-                    cleanWord.append('’');
-                    
+
                 if (U_IS_SUPPLEMENTARY(ch)) {
                     ++i; // Avança um a mais em caso de par de substituição (UTF-16)
                 }
@@ -142,7 +145,7 @@ void lerArquivo( fstream &file, RBtree<Key, Value>& teste){
             cleanWord.toLower();
             string key;
             cleanWord.toUTF8String(key);
-            if(key!= " " && key!= "")
+            if(!key.empty())
                 teste[key]++;
         }
             
@@ -151,6 +154,61 @@ void lerArquivo( fstream &file, RBtree<Key, Value>& teste){
 
     file.close();
 
+}
+
+void lerArquivoApos(fstream &file, RBtree<string, int>& teste) {
+    string linha;
+    string k;
+    
+    // CONFIGURAÇÃO DO UNICODE-SET - Adicione o smart quote (') como caractere válido
+    icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]['’]"); // Inclui ambos tipos de apóstrofos
+    UErrorCode status = U_ZERO_ERROR;
+    icu::UnicodeSet wordChars(pattern, status);
+    
+    while(getline(file, linha)) {
+        stringstream ss;
+        ss << linha;
+        
+        while(ss >> k) {
+            icu::UnicodeString tratar = icu::UnicodeString::fromUTF8(k);
+            icu::UnicodeString cleanWord;
+            
+            for (int32_t i = 0; i < tratar.length(); ++i) {
+                int32_t e = i + 1;
+                UChar32 ch = tratar.char32At(i);
+                UChar32 chAfter = tratar.char32At(e);
+                
+                // Tratamento para smart quote (')
+                //se for um smart code e a proxima letra tiver no 
+                if (ch == 0x2019) { // Unicode para smart quote (')
+                    // Verifica se é um smart quote válido (entre letras)
+                   // if (wordChars.contains(tratar.char32At(i-1))) {
+                        cleanWord.append(ch);
+                   // }
+                }
+                
+                if (wordChars.contains(ch)) {
+                    cleanWord.append(ch);
+                }
+                
+                // Tratamento para hífen
+                if (ch == '-' && wordChars.contains(chAfter)) {
+                    cleanWord.append('-');
+                }
+                
+                if (U_IS_SUPPLEMENTARY(ch)) {
+                    ++i;
+                }
+            }
+            
+            cleanWord.toLower();
+            string key;
+            cleanWord.toUTF8String(key);
+            if (!key.empty())
+                teste[key]++;
+        }
+    }
+    file.close();
 }
 int main() {
     
@@ -185,10 +243,10 @@ int main() {
     fstream file("kjv-bible.txt", ios::in);
     vector<pair<string, int>> dados;
     //lerArquivo(file, hashEncTESTE, dados);
-    lerArquivo(file, TreeRbTeste);
+    lerArquivoApos(file, TreeRbTeste);
 
     //TODO fazer uma funca begin para cada uma das estruturas
-    TreeRbTeste.impressao();
+    TreeRbTeste.impressao("xique_xique2.txt");
     
     cout << TreeRbTeste.size();
     return 0;
