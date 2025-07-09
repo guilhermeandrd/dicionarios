@@ -5,10 +5,10 @@
 #include <fstream>
 #include <algorithm>
 
-#include "ChainedHashTable.hpp"
-#include "OpenHashTable.hpp"
-#include "RBTree.hpp"
-#include "AVLTree.hpp"
+#include "estruturas_auxiliares/ChainedHashTable.hpp"
+#include "estruturas_auxiliares/OpenHashTable.hpp"
+#include "estruturas_auxiliares/RBTree.hpp"
+#include "estruturas_auxiliares/AVLTree.hpp"
 
 using namespace std;
 

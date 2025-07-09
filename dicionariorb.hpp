@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "ChainedHashTable.hpp"
+#include "estruturas_auxiliares/RBTree.hpp"
 
 #ifndef DICIONARIO_CHAINED_HPP
 #define DICIONARIO_CHAINED_HPP

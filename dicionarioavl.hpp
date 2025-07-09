@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "AVLTree.hpp"
+#include "estruturas_auxiliares/AVLTree.hpp"
 
 #ifndef DICIONARIO_AVL_HPP
 #define DICIONARIO_AVL_HPP
