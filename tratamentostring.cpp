@@ -53,7 +53,7 @@ int main() {
     std::cout << "String Limpa:    " << palavra_limpa << std::endl;
     std::cout << "--- FIM DO TESTE ---" << std::endl;*/
 
-    icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[[:L:] ]");
+    icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[[:L:]']");
     UErrorCode status = U_ZERO_ERROR;
     icu::UnicodeSet wordChars(pattern, status);
 

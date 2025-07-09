@@ -115,11 +115,13 @@ public:
     }
 
     /**
-     * @brief busca o nó e o atualiza caso exista, caso nao, eh lancada uma excecao.
+     * @brief busca o nó e o atualiza caso exista
      * 
      * @param k chave do noh a ser procurado
      * 
      * @param v novo valor do par
+     * 
+     * //TODO melhorar isso aqui
      */
     bool update(Key k, Value v){
         return _update(m_root, k , v);

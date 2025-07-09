@@ -22,6 +22,9 @@
 #include <stack>
 #include <utility>
 #include <string>
+#include <fstream>
+#include <stack>
+#include <ctime>
 
 /**
  * @brief implementacao da classe de arvore balanceada rubro negra,
@@ -437,6 +440,63 @@ public:
         m_size++;
 
         return p->n_pair.second;   
+    }
+
+    void impressao(std::string nameFile = "testeAVL"){
+
+        //primeiro ocorre o tratamento da string
+        
+        //o usuario nao passou nome para o teste
+        if(nameFile == "testeAVL"){
+
+            //obtem a hora atual para gerar sempre arquvios de nomes diferentes
+            time_t agora = time(0);
+            tm* ltm = localtime(&agora);
+
+            //usa ostringstream para montar o nome do arquivo
+            std::ostringstream oss;
+            oss << nameFile << ltm->tm_hour << "-" << ltm->tm_min << "-" 
+            << ltm->tm_sec << "-" << ".txt";
+
+            //nome do arquivo igual ao objeto ostringstream
+            nameFile = oss.str();
+        }
+
+        std::fstream file (nameFile, std::ios::in | std::ios::out);
+
+        if(root==nil)
+            throw std::invalid_argument("raiz da arvore é nul");
+
+        if(!file.is_open()){
+            
+            std::ofstream creator(nameFile);
+
+            if(!creator.is_open())
+                throw std::runtime_error("erro critico ao criar o arquivo");
+            
+            creator.close();
+            file.open(nameFile, std::ios::in | std::ios::out);
+        }
+        
+
+        Node* node = root;
+        std::stack<Node*> pilha;
+        while(!pilha.empty() || node != nil){
+            if(node != nil){
+                pilha.push(node);
+                node = node->left;
+            }else{
+                node = pilha.top();
+                pilha.pop();
+
+                //coloca node no arquivo
+                file << node->n_pair.first << " " << node->n_pair.second << std::endl;
+
+                node = node->right;
+            }
+        }
+
+        file.close();
     }
 private:
 
