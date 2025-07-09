@@ -5,3 +5,4 @@ Você rapidamente encontrará problemas:
 Como exibir a data? "07/07/2025" 
 (Brasil) ou "7/7/25" 
 (EUA) ou "2025-07-07" (Japão)?
+D'água e Guarda-chuva
