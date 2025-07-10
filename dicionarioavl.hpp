@@ -45,21 +45,42 @@ class MapAvl{
     }
 
     //at
+    Value at(const Key &k){
+        return m_avl.at(k);
+    }
 
     //impressao
+    void impressao(std::string nameFile = "text.avl"){
+        m_avl.impressao(string);
+    }
 
     //size
+    size_t size(){
+        return m_avl.size();
+    }
 
     //counter rotation
+    size_t counter_rotation(){
+        return m_avl.counter_rotation();
+    }
 
-    //counter comparation
+    //counter comparator
+    size_t counter_comparator(){
+        return m_avl.counter_comparator();
+    }
 
-    //size
+    //empty
+    bool empty(){
+        return m_avl.empty();
+    }
 
     //clear
+    void clear(){
+        m_avl.clear();
+    }
 
     //destrutor
-
+    ~MapAvl() = default;
 
 };
 

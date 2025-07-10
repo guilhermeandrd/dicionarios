@@ -6,60 +6,85 @@
 #define DICIONARIO_CHAINED_HPP
 
 template <typename Key, typename Value>
-class ChainedTableMap{
-    ChainedHashTable<Key, Value> m_chained_table;
+class MapRb{
+    RBtree<Key, Value> m_rb;
 
     //construtor
-    MapAvl(){
-        m_chained_table;
+    MapRb(){
+        m_rb;
     }
 
     //construtor com avl
-    MapAvl(ChainedHashTable<Key, Value> p_chained_table){
-        m_chained_table = p_chained_table;
+    MapRb(RBtree<Key, Value> p_chained_table){
+        m_rb = p_chained_table;
     }
 
     //construtor com avl
-    MapAvl(const AvlTree<Key, Value> p_chained_table){
-        m_chained_table = p_avl;
+    MapRbl(const RBtree<Key, Value> p_chained_table){
+        m_rb = p_avl;
     }
 
     //insert
     bool add(Key k, Value v){
-        m_chained_table.add(k, v);
+        m_rb.insert(k, v);
     }
 
     //update
     bool update(Key k, Value){
-        return !m_chained_table.add(k, v);
+        return !m_rb.insert(k, v);
     }
 
     //remove
     void remove(const Key k){
-        m_chained_table.remove(k);
+        m_rb.remove(k);
     }
 
     //contains
     bool contains(const Key k){
-        return m_chained_table.contains(k);
+        return m_rb.contains(k);
     }
 
-    //at
+    Value& at(const Key &k){
+        return m_rb.at(k);
+    }
 
     //impressao
+    /*void impressao(std::string nameFile = "text.avl"){
+        m_chained_table.impressao(string);
+    }*/
 
-    //size
+    //size, int k
+    size_t size(){
+        return m_rb.size();
+    }
 
     //counter rotation
+    size_t counter_rotation(){
+        return m_rb.counter_rotation();
+    }
 
-    //counter comparation
+    //counter comparator
+    size_t counter_comparator(){
+        return m_rb.counter_comparator();
+    }
 
-    //size
+    //empty
+    bool empty(){
+        return m_rb.empty();
+    }
 
     //clear
+    void clear(){
+        m_rb.clear();
+    }
+
+    //iterador
+    Value& operator[](Key &k){
+        return m_rb[k];
+    }
 
     //destrutor
-
+    ~MapRb() = default;
 
 };
 

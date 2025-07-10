@@ -9,18 +9,19 @@ template <typename Key, typename Value>
 class ChainedTableMap{
     ChainedHashTable<Key, Value> m_chained_table;
 
+    //TODO deixar elas com o mesmo fator de carga
     //construtor
     MapAvl(){
         m_chained_table;
     }
 
-    //construtor com avl
+    //construtor com tabela encadeada
     MapAvl(ChainedHashTable<Key, Value> p_chained_table){
         m_chained_table = p_chained_table;
     }
 
-    //construtor com avl
-    MapAvl(const AvlTree<Key, Value> p_chained_table){
+    //construtor com tabela encadeada
+    MapAvl(const ChainedHashTable<Key, Value> p_chained_table){
         m_chained_table = p_avl;
     }
 
@@ -44,23 +45,47 @@ class ChainedTableMap{
         return m_chained_table.contains(k);
     }
 
-    //at
+    Value& at(const Key &k){
+        return m_chained_table.at(k);
+    }
 
     //impressao
+    /*void impressao(std::string nameFile = "text.avl"){
+        m_chained_table.impressao(string);
+    }*/
 
-    //size
+    //size, int k
+    size_t size(){
+        return m_chained_table.size();
+    }
 
     //counter rotation
+    size_t counter_collision(){
+        return m_chained_table.counterCollision();
+    }
 
-    //counter comparation
+    //counter comparator
+    size_t counter_comparator(){
+        return m_chained_table.counterComparator();
+    }
 
-    //size
+    //empty
+    bool empty(){
+        return m_chained_table.empty();
+    }
 
     //clear
+    void clear(){
+        m_chained_table.clear();
+    }
+
+    //iterador
+    Value& operator[](Key &k){
+        return m_chained_table[k];
+    }
 
     //destrutor
-
-
+    ~ChainedTableMap() = default;
 };
 
 #endif //#END_OF_DICIONARIO_AVL_HPP
