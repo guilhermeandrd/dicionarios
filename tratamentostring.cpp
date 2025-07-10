@@ -9,49 +9,6 @@
 
 using namespace std;
 int main() {
-    // String de teste original
-    
-    /*icu::UnicodeString palavra_suja = UNICODE_STRING_SIMPLE("Olá, mundo-123! Bem-vindo.");
-
-    std::cout << "--- INÍCIO DO TESTE ---" << std::endl;
-    std::cout << "String Original: " << palavra_suja << std::endl;
-
-    const icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[[:L:]-]");
-    
-    std::cout << "Padrão UnicodeSet usado: " << pattern << std::endl;
-
-    UErrorCode status = U_ZERO_ERROR;
-    icu::UnicodeSet wordChars(pattern, status);
-
-    if (U_FAILURE(status)) {
-        std::cerr << "ERRO: Falha ao criar o UnicodeSet. Código do erro: " 
-                  << u_errorName(status) << std::endl;
-        u_cleanup();
-        return 1;
-    }
-
-    std::cout << "UnicodeSet criado com sucesso." << std::endl;
-
-    // --- Limpeza da string ---
-    icu::UnicodeString palavra_limpa;
-
-    for (int32_t i = 0; i < palavra_suja.length(); ++i) {
-        UChar32 ch = palavra_suja.char32At(i);
-
-        if (wordChars.contains(ch)) {
-            palavra_limpa.append(ch);
-        }
-
-        //TODO fazer tratametno de palavra por palavra usando sstream
-        //TODO fazer tratamento do "-"
-        if (U_IS_SUPPLEMENTARY(ch)) {
-            ++i; // Avança um a mais em caso de par de substituição (UTF-16)
-        }
-    }
-
-    std::cout << "-------------------------" << std::endl;
-    std::cout << "String Limpa:    " << palavra_limpa << std::endl;
-    std::cout << "--- FIM DO TESTE ---" << std::endl;*/
 
     icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[[:L:]']");
     UErrorCode status = U_ZERO_ERROR;
@@ -62,29 +19,11 @@ int main() {
     std::string utf8line;
 
     while(getline(file, utf8line)) {
-
-        // Converte a linha para UnicodeString
-        //icu::UnicodeString u_line = icu::UnicodeString::fromUTF8(utf8line);
-        
-        // Aplica a limpeza inicial: remove toda pontuação exceto o hífen.
-        //limpeza geral
-        
-
-        //wordChars.retainAll(u_line); talvez seja uma linha inutil
-        
-        //limpeza especifica do caso do "-"
-
-
-        // Para quebrar a linha em palavras, convertemos de volta para string
-        // e usamos um stringstream.
-        //std::string cleaned_line_utf8;
         
         
         stringstream ss(utf8line);
         string word;
         
-        // PASSO 2 e 3: Tokenização e análise por palavra
-        //TODO fazer o tratamento aqui deve ser mais eficiente
         while (ss >> word) {
 
             //CONVERTE STRING PARA UNICODE
