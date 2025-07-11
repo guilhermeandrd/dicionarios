@@ -2,31 +2,33 @@
 
 #include "estruturas_auxiliares/RBTree.hpp"
 
-#ifndef DICIONARIO_CHAINED_HPP
-#define DICIONARIO_CHAINED_HPP
+#ifndef DICIONARIO_RB_HPP
+#define DICIONARIO_RB_HPP
 
 template <typename Key, typename Value>
 class MapRb{
+private:
     RBtree<Key, Value> m_rb;
 
+public:
     //construtor
     MapRb(){
         m_rb;
     }
 
     //construtor com avl
-    MapRb(RBtree<Key, Value> p_chained_table){
+    /*MapRb(RBtree<Key, Value> p_chained_table){
         m_rb = p_chained_table;
-    }
+    }*/
 
     //construtor com avl
-    MapRbl(const RBtree<Key, Value> p_chained_table){
+    /*MapRbl(const RBtree<Key, Value> p_chained_table){
         m_rb = p_avl;
-    }
+    }*/
 
     //insert
     bool add(Key k, Value v){
-        m_rb.insert(k, v);
+        return m_rb.insert(k, v);
     }
 
     //update

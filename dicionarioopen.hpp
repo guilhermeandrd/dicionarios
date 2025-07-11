@@ -2,13 +2,15 @@
 
 #include "estruturas_auxiliares/OpenHashTable.hpp"
 
-#ifndef DICIONARIO_CHAINED_HPP
-#define DICIONARIO_CHAINED_HPP
+#ifndef DICIONARIO_OPEN_HPP
+#define DICIONARIO_OPEN_HPP
 
 template <typename Key, typename Value>
 class OpenTableMap{
+private:
     OpenHashTable<Key, Value> m_open_table;
 
+public:
     //construtor
     OpenHashMap(){
         m_open_table;
@@ -26,11 +28,11 @@ class OpenTableMap{
 
     //insert
     bool add(Key k, Value v){
-        m_open_table.add(k, v);
+        return m_open_table.add(k, v);
     }
 
     //update
-    bool update(Key k, Value){
+    bool update(Key k, Value v){
         return !m_open_table.add(k, v);
     }
 

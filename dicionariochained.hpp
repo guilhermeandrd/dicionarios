@@ -6,32 +6,34 @@
 #define DICIONARIO_CHAINED_HPP
 
 template <typename Key, typename Value>
-class ChainedTableMap{
+
+class DicionarioChainedHash{
+private:
     ChainedHashTable<Key, Value> m_chained_table;
 
-    //TODO deixar elas com o mesmo fator de carga
     //construtor
-    MapAvl(){
+public:
+    DicionarioChainedHash(){
         m_chained_table;
     }
 
     //construtor com tabela encadeada
-    MapAvl(ChainedHashTable<Key, Value> p_chained_table){
+    /*DicionarioChainedHash(ChainedHashTable<Key, Value> p_chained_table){
         m_chained_table = p_chained_table;
     }
 
     //construtor com tabela encadeada
-    MapAvl(const ChainedHashTable<Key, Value> p_chained_table){
-        m_chained_table = p_avl;
-    }
+    DicionarioChainedHash(const ChainedHashTable<Key, Value> p_chained_table){
+        m_chained_table = p_chained_table;
+    }*/
 
     //insert
     bool add(Key k, Value v){
-        m_chained_table.add(k, v);
+        return m_chained_table.add(k, v);
     }
 
     //update
-    bool update(Key k, Value){
+    bool update(Key k, Value v){
         return !m_chained_table.add(k, v);
     }
 
@@ -85,7 +87,7 @@ class ChainedTableMap{
     }
 
     //destrutor
-    ~ChainedTableMap() = default;
+    ~DicionarioChainedHash() = default;
 };
 
 #endif //#END_OF_DICIONARIO_AVL_HPP

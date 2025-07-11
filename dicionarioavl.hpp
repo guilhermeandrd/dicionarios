@@ -1,28 +1,29 @@
 #include <iostream>
 
 #include "estruturas_auxiliares/AVLTree.hpp"
-
+#include <string.h>
 #ifndef DICIONARIO_AVL_HPP
 #define DICIONARIO_AVL_HPP
 
 template <typename Key, typename Value>
 class MapAvl{
+private:
     AvlTree<Key, Value> m_avl;
-
+public:
     //construtor
     MapAvl(){
         m_avl;
     }
 
     //construtor com avl
-    MapAvl(AvlTree<Key, Value> p_avl){
+    /*MapAvl(AvlTree<Key, Value> p_avl){
         m_avl = p_avl;
-    }
+    }*/
 
     //construtor com avl
-    MapAvl(const AvlTree<Key, Value> p_avl){
+    /*MapAvl(const AvlTree<Key, Value> p_avl){
         m_avl = p_avl;
-    }
+    }*/
 
     //insert
     void add(Key k, Value v){
@@ -30,7 +31,7 @@ class MapAvl{
     }
 
     //update
-    bool update(Key k, Value){
+    bool update(Key k, Value v){
         return m_avl.update(k, v);
     }
 
@@ -51,7 +52,7 @@ class MapAvl{
 
     //impressao
     void impressao(std::string nameFile = "text.avl"){
-        m_avl.impressao(string);
+        m_avl.impressao(nameFile);
     }
 
     //size
