@@ -306,7 +306,6 @@ public:
         m_root = clear(m_root);
     }
     
-    //TODO depois fazer com que os testes sejam inseridos em uma pasta espefica
     void impressao(std::string nameFile = "testeAVL"){
 
         //primeiro ocorre o tratamento da string
