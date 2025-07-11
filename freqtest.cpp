@@ -50,7 +50,6 @@ void lerArquivo( fstream &file, ChainedHashTable<Key, Value>& teste, vector<pair
                     cleanWord.append(ch);
                 }
 
-                //TODO fazer tratamento do "-"
                 //CASO EM QUE O CARACTER QUE VEM DEPOIS É UMA LETRA
                 if(ch=='-' && wordChars.contains(chAfter)){
                     cleanWord.append('-');
@@ -132,7 +131,6 @@ void lerArquivo( fstream &file, RBtree<string, int>& teste){
                     cleanWord.append(ch);
                 }
 
-                //TODO fazer tratamento do "-"
                 //CASO EM QUE O CARACTER QUE VEM DEPOIS É UMA LETRA
                 if(ch=='-' && wordChars.contains(chAfter)){
                     cleanWord.append('-');
@@ -240,7 +238,7 @@ int main() {
     string name = "teste.txt";
     
     //agora teste de insercao atraves de um arquivo
-    fstream file("kjv-bible.txt", ios::in);
+    fstream file("donaaranha.txt", ios::in);
     vector<pair<string, int>> dados;
     //lerArquivo(file, hashEncTESTE, dados);
     lerArquivoApos(file, TreeRbTeste);

@@ -4,7 +4,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
 
     cout << "numero de parametros = " << argc << endl;
-
+    
     for(int i = 0; i < argc; ++i) {
         cout << "argumento [" << i << "] = " << argv[i] << endl;
     } 
