@@ -103,12 +103,12 @@ public:
      * 
      * @param tableSize := o numero de slots da tabela. 
      */
-    ChainedHashTable(size_t tableSize = 19, float load_factor = 0.7){
+    ChainedHashTable(size_t tableSize = 19, float load_factor = 0.5){
         m_number_of_elements = 0;
         m_table_size = get_next_prime(tableSize);
         m_table.resize(m_table_size);
         if(load_factor <= 0){
-            m_max_load_factor = 0.7;
+            m_max_load_factor = 0.5;
         }else{
             m_max_load_factor = load_factor;
         }
