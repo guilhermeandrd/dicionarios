@@ -40,7 +40,6 @@ int main() {
                 palavra_limpa.append(ch);
             }
 
-            //TODO fazer tratamento do "-"
             //CASO EM QUE O CARACTER QUE VEM DEPOIS É UMA LETRA
             if(ch=='-' && wordChars.contains(chAfter)){
                 palavra_limpa.append('-');
@@ -55,7 +54,6 @@ int main() {
 
             // Regra do hífen: se a "palavra" for apenas um hífen, ignore.
             if (word != "-") {
-                //TODO deixar string minuscula
                 palavra_limpa.toLower();
                 // A 'word' aqui está limpa e válida de acordo com suas regras.
                 // Você pode convertê-la de volta para UnicodeString se precisar.
