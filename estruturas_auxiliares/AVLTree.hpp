@@ -22,6 +22,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <ctime>
+#include <vector>
 
 /**
  * @brief implementacao da estrutura Arvore AVL
@@ -362,6 +363,36 @@ public:
 
         file.close();
     }
+
+    //O(N)
+    std::vector<std::pair<Key,Value>> vetorize(){
+
+        if(m_root==nullptr)
+            throw std::invalid_argument("raiz da arvore é nul");
+
+
+        Node* node = m_root;
+        std::stack<Node*> pilha;
+        std::vector<std::pair<Key, Value>> retorno;
+
+        while(!pilha.empty() || node != nullptr){
+            if(node != nullptr){
+                pilha.push(node);
+                node = node->left;
+            }else{
+                node = pilha.top();
+                pilha.pop();
+
+                //coloca node no vetor
+                retorno.push_back({node->n_pair.first, node->n_pair.second});
+
+                node = node->right;
+            }
+        }
+
+        return retorno;
+    }
+
 private:
 
     /**

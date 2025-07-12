@@ -585,6 +585,20 @@ public:
             }
     }
 
+    std::vector<std::pair<Key, Value>> vetorize(){
+        if(m_numbers_of_elements == 0)
+            throw std::invalid_argument("a tabela open hash está vazia");
+
+        std::vector<std::pair<Key, Value>> retorno;
+
+        for(auto& node : m_table){
+            if(node.n_status == Active)
+                retorno.push_back({node.n_pair.first, node.n_pair.second});
+        }
+
+        return retorno;
+    }
+
     /**
      * @brief : destrutor da open_hash_table
      */

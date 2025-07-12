@@ -25,6 +25,9 @@
 #include <fstream>
 #include <stack>
 #include <ctime>
+#include <vector>
+#include <sstream>
+#include <stdexcept>
 
 /**
  * @brief implementacao da classe de arvore balanceada rubro negra,
@@ -442,12 +445,12 @@ public:
         return p->n_pair.second;   
     }
 
-    void impressao(std::string nameFile = "testeAVL"){
+    void impressao(std::string nameFile = "testeRB"){
 
         //primeiro ocorre o tratamento da string
         
         //o usuario nao passou nome para o teste
-        if(nameFile == "testeAVL"){
+        if(nameFile == "testeRB"){
 
             //obtem a hora atual para gerar sempre arquvios de nomes diferentes
             time_t agora = time(0);
@@ -497,6 +500,34 @@ public:
         }
 
         file.close();
+    }
+
+    std::vector<std::pair<Key, Value>> vetorize(){
+
+         if(root==nil)
+            throw std::invalid_argument("raiz da arvore é nul");
+
+
+        Node* node = root;
+        std::stack<Node*> pilha;
+        std::vector<std::pair<Key, Value>> retorno;
+
+        while(!pilha.empty() || node != nil){
+            if(node != nil){
+                pilha.push(node);
+                node = node->left;
+            }else{
+                node = pilha.top();
+                pilha.pop();
+
+                //coloca node no vetor
+                retorno.push_back({node->n_pair.first, node->n_pair.second});
+
+                node = node->right;
+            }
+        }
+
+        return retorno;
     }
 private:
 

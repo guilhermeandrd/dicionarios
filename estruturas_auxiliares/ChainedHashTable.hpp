@@ -494,6 +494,22 @@ public:
         return os;
     }
 
+    std::vector<std::pair<Key, Value>> vetorize(){
+
+        if(m_number_of_elements == 0)
+            throw std::invalid_argument("a tabela chained hash está vazia");
+
+        std::vector<std::pair<Key, Value>> retorno;
+        //pegar todas as listas do vetot
+        for(auto& list : m_table){
+            for(auto& node : list){
+                retorno.push_back({node.first, node.second});
+            }
+        }
+
+        return retorno;
+    }
+
 };
 
 
