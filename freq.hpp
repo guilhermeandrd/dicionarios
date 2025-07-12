@@ -23,6 +23,9 @@
 
 using namespace std;
 
+#ifndef FREQ_HPP
+#define FREQ_HPP
+
 void readFile(fstream &file, RBtree<string, int>& teste) {
     string linha;
     string k;
@@ -156,52 +159,4 @@ void frequencia(MapAvl<string, int> dic, ifstream &file){
     gerarArquivo(vetorDic, fileOut);
 }
 
-int main() {
-    
-    //criacao das estruturas 
-    ChainedHashTable<string, int> hashEncTESTE;
-    OpenHashTable<int, string> hashOpenTESTE;
-    AvlTree<string, int> TreeAvlTESTE;
-    RBtree<string, int> TreeRbTeste;
-
-    string name = "teste.txt";
-    
-    //agora teste de insercao atraves de um arquivo
-    fstream file("kjv-bible.txt", ios::in);
-    vector<pair<string, int>> dados;
-    //lerArquivo(file, hashEncTESTE, dados);
-    readFile(file, TreeRbTeste);
-
-    vector<pair<string, int>> rb = TreeRbTeste.vetorize();
-
-    //TODO fazer uma funca begin para cada uma das estruturas
-    TreeRbTeste.impressao("xique_xique2.txt");
-    
-    cout << TreeRbTeste.size();
-
-    IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
-
-    std::sort(rb.begin(), rb.end(), 
-        [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
-            // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
-            return comparadorPtBR(a.first, b.first);
-        }
-    );
-    
-    // 3. PRONTO! O seu 'vetorDePalavras' agora está perfeitamente ordenado.
-    // Agora você pode imprimir o conteúdo do vetor para um arquivo.
-
-    //ETAPAS
-    
-    //ler o arquivo com a estrutura
-
-    //vetorizar a estrutura
-
-    //saber se precisa ordenar
-
-    //se precisar   - ordena + custo
-
-    //passa a o vetor para um arquivo agora
-
-    return 0;
-}
+#endif //END_OF_FREQ_HPP
