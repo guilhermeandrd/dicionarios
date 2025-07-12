@@ -15,8 +15,11 @@
 #include "estruturas_auxiliares/OpenHashTable.hpp"
 #include "estruturas_auxiliares/RBTree.hpp"
 #include "estruturas_auxiliares/AVLTree.hpp"
+#include "estruturas_auxiliares/IcuCollator.hpp"
 
 using namespace std;
+
+//TODO fazer diferenciacao para sort se eh necessario ou nao
 
 template <typename Key, typename Value>
 //TODO passar erro para quando nao der certo abrir o arquivo
@@ -208,6 +211,15 @@ void lerArquivoApos(fstream &file, RBtree<string, int>& teste) {
     }
     file.close();
 }
+
+void gerarArquivo(vector<pair<string, int>> dados, ofstream file){
+    
+    for(auto& node : dados){
+        file << node.first << " " << node.second << endl;
+    }
+
+}
+
 int main() {
     
     //vetor com dados que serão usados no teste
@@ -238,15 +250,31 @@ int main() {
     string name = "teste.txt";
     
     //agora teste de insercao atraves de um arquivo
-    fstream file("donaaranha.txt", ios::in);
+    fstream file("kjv-bible.txt", ios::in);
     vector<pair<string, int>> dados;
     //lerArquivo(file, hashEncTESTE, dados);
     lerArquivoApos(file, TreeRbTeste);
+
+    vector<pair<string, int>> rb = TreeRbTeste.vetorize();
 
     //TODO fazer uma funca begin para cada uma das estruturas
     TreeRbTeste.impressao("xique_xique2.txt");
     
     cout << TreeRbTeste.size();
+
+    IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
+
+    //funca sort com lambda que agora sabe o comparar corretamente
+    std::sort(rb.begin(), rb.end(), 
+        [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
+            // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
+            return comparadorPtBR(a.first, b.first);
+        }
+    );
+    // 3. PRONTO! O seu 'vetorDePalavras' agora está perfeitamente ordenado.
+    // Agora você pode imprimir o conteúdo do vetor para um arquivo.
+    gerarArquivo(rb, ofstream ("teste2.txt"));
+
     return 0;
 }
 
