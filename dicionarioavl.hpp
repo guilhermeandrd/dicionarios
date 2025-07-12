@@ -1,7 +1,10 @@
 #include <iostream>
 
 #include "estruturas_auxiliares/AVLTree.hpp"
-#include <string.h>
+#include <string>
+#include <vector>
+#include <algorithm>
+
 #ifndef DICIONARIO_AVL_HPP
 #define DICIONARIO_AVL_HPP
 
@@ -46,7 +49,12 @@ public:
     }
 
     //at
-    Value at(const Key &k){
+    Value& at(const Key &k){
+        return m_avl.at(k);
+    }
+
+
+    const Value& at(const Key &k){
         return m_avl.at(k);
     }
 
@@ -79,6 +87,11 @@ public:
     void clear(){
         m_avl.clear();
     }
+
+    std::vector<std::pair<Key, Value>> vetorize(){
+        return m_avl.vetorize();
+    }
+
 
     //destrutor
     ~MapAvl() = default;
