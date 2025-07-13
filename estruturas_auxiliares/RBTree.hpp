@@ -445,6 +445,10 @@ public:
         return p->n_pair.second;   
     }
 
+    const Value& operator[](const Key& k) const{
+        return at(k);
+    }
+
     void impressao(std::string nameFile = "testeRB"){
 
         //primeiro ocorre o tratamento da string
