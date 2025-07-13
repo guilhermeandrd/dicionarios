@@ -5,6 +5,7 @@
 #include <fstream>
 #include <algorithm>
 #include <sstream>
+#include <ctime>
 
 #include <unicode/unistr.h>
 #include <unicode/uniset.h>
@@ -26,7 +27,10 @@ using namespace std;
 #ifndef FREQ_HPP
 #define FREQ_HPP
 
-void readFile(fstream &file, RBtree<string, int>& teste) {
+bool ordena = false;
+
+template <typename Class>
+void readFile(ifstream &file, Class &teste) {
     string linha;
     string k;
     
@@ -130,17 +134,40 @@ void readFile(ifstream &file, MapAvl<string, int>& teste) {
             cleanWord.toLower();
             string key;
             cleanWord.toUTF8String(key);
-            if (!key.empty())
-                if(!teste.contains(key))
-                    teste.add(key, 1);
-                
+            if (!key.empty()){
+                if(!teste.contains(key)){
+                    teste.add(key, 0);
+                }
                 teste.at(key)++;
+            }
         }
     }
     file.close();
 }
 
-void gerarArquivo(vector<pair<string, int>> dados, ofstream &file){
+
+
+
+void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoDic"){
+
+    //tratamento do nome do arquivo
+    if(nameFile == "impressaoDic" || nameFile.empty()){
+        time_t now = time(0);
+        tm* ltm = localtime(&now);
+
+        std::ostringstream oss;
+
+        oss << nameFile << ltm->tm_hour << "-" 
+        << ltm->tm_min << "-" 
+        << ltm->tm_sec << "-" << ".txt";    
+        nameFile = oss.str();
+    }
+
+
+    ofstream file(nameFile);
+
+    if(!file.is_open())
+        throw std::runtime_error("erro ao abrir o arquivo de frequencia");
 
     for(auto& node : dados){
         file << node.first << " " << node.second << endl;
@@ -148,15 +175,115 @@ void gerarArquivo(vector<pair<string, int>> dados, ofstream &file){
 
 }
 
-void frequencia(MapAvl<string, int> dic, ifstream &file){
+void frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
+    if(!file.is_open())
+        throw std::runtime_error("arquivo não foi aberto");
+    
     readFile(file, dic);
 
     vector<pair<string, int>> vetorDic = dic.vetorize();
 
     ofstream fileOut("teste.dic");
 
-    gerarArquivo(vetorDic, fileOut);
+    if(!fileOut.is_open())
+         throw std::runtime_error("arquivo não foi aberto");
+        
+    if(ordena){
+        //TODO sort com icucomparator
+    }else{
+        sort(vetorDic.begin(), vetorDic.end());
+    }
+
+    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
+    gerarArquivo(vetorDic, nameFile);
 }
+
+void frequencia(ChainedHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+
+    if(!file.is_open())
+        throw std::runtime_error("arquivo não foi aberto");
+    
+    readFile(file, dic);
+
+    vector<pair<string, int>> vetorDic = dic.vetorize();
+
+    ofstream fileOut("teste.dic");
+
+    if(!fileOut.is_open())
+         throw std::runtime_error("arquivo não foi aberto");
+    
+    if(ordena){
+        //TODO sort com icucomparator
+    }else{
+        sort(vetorDic.begin(), vetorDic.end());
+    }
+
+    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
+    gerarArquivo(vetorDic, nameFile);
+}
+
+void frequencia(MapRb<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+
+    if(!file.is_open())
+        throw std::runtime_error("arquivo não foi aberto");
+    
+    readFile(file, dic);
+
+    vector<pair<string, int>> vetorDic = dic.vetorize();
+
+    ofstream fileOut("teste.dic");
+
+    if(!fileOut.is_open())
+         throw std::runtime_error("arquivo não foi aberto");
+
+    if(ordena){
+        //TODO sort com icucomparator
+        sort(vetorDic.begin(), vetorDic.end());
+    }
+
+    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
+    gerarArquivo(vetorDic, nameFile);
+}
+
+void frequencia(MapAvl<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+
+    if(!file.is_open())
+        throw std::runtime_error("arquivo não foi aberto");
+    
+    readFile(file, dic);
+
+    vector<pair<string, int>> vetorDic = dic.vetorize();
+
+    ofstream fileOut("teste.dic");
+
+    if(!fileOut.is_open())
+         throw std::runtime_error("arquivo não foi aberto");
+    
+    if(ordena){
+        //TODO sort com icucomparator
+        sort(vetorDic.begin(), vetorDic.end());
+    }
+
+    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
+    gerarArquivo(vetorDic, nameFile);
+}
+
+/*
+FLUXO DE ORDENACAO
+
+TABELAS
+    SE TIVER ACENTO
+        ORDENA COM MAIS CUSTO
+    SE NAO
+        ORDENA COM MENOS CUSTO
+
+ARVORES
+    SE TIVER ACENTO
+        ORDENA COM MAIS CUSTO
+    SE NAO
+        NAO ORDENA
+*/
+
 
 #endif //END_OF_FREQ_HPP
