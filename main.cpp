@@ -3,6 +3,11 @@
 #include <stdexcept>
 #include <stdexcept>
 
+#include <unicode/unistr.h>
+#include <unicode/uniset.h>
+#include <unicode/ustream.h>
+#include <unicode/uclean.h>
+
 using namespace std;
 
 //estruturas
@@ -15,18 +20,14 @@ using namespace std;
 #include "freq.hpp"
 
 int main(int argc, char* argv[]) {
-
-    cout << "numero de parametros = " << argc << endl;
-
-    for(int i = 0; i < argc; ++i) {
-        cout << "argumento [" << i << "] = " << argv[i] << endl;
-    } 
+    
     string primeiro = argv[0];
     string segundo = argv[1];
     string terceiro=  argv[2];
+    string nameFile = argv[3];
     
     //primeiro parametro    
-    cout << terceiro;
+    //cout << terceiro;
 
     //segundo - tipo da estrutra a ser utilizada
     //terceiro - string a ser lida
@@ -38,20 +39,20 @@ int main(int argc, char* argv[]) {
     
     if(segundo == "dicionarioAvl"){
         MapAvl<string, int> dic;
-        frequencia(dic, file);
+        frequencia(dic, file, nameFile);
 
-    }/*else if(segundo == "dicionarioRb"){
-        MapAvl<string, int> dic;
-        gerarArquivo(dic, terceiro);
+    }else if(segundo == "dicionarioRb"){
+        MapRb<string, int> dic;
+        frequencia(dic, file, nameFile);
     }else if(segundo == "dicionarioOpen"){
-        MapAvl<string, int> dic;
-        gerarArquivo(dic, terceiro);
+        OpenHashMap<string, int> dic;
+        frequencia(dic, file, nameFile);
 
     }else if(segundo == "dicionarioChained"){
-        MapAvl<string, int> dic;
-        gerarArquivo(dic, terceiro);
+        ChainedHashMap<string, int> dic;
+        frequencia(dic, file, nameFile);
 
-    }*/
+    }
     else 
         cout << "Nome da estrutura errado ou estrutura inexistente" 
         << "As estruturas tem os seguintes nomes" << endl;
