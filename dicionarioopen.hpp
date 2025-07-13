@@ -6,7 +6,7 @@
 #define DICIONARIO_OPEN_HPP
 
 template <typename Key, typename Value>
-class OpenTableMap{
+class OpenHashMap{
 private:
     OpenHashTable<Key, Value> m_open_table;
 
@@ -17,14 +17,14 @@ public:
     }
 
     //construtor com avl
-    OpenHashMap(OpenHashTable<Key, Value> p_open_table){
+    /*OpenHashMap(OpenHashTable<Key, Value> p_open_table){
         m_open_table = p_open_table;
     }
 
     //construtor com avl
     OpenHashMap(const OpenHashTable<Key, Value> p_open_table){
         m_open_table = p_avl;
-    }
+    }*/
 
     //insert
     bool add(Key k, Value v){
@@ -47,6 +47,10 @@ public:
     }
 
     Value& at(const Key &k){
+        return m_open_table.at(k);
+    }
+
+    const Value& at(const Key &k) const{
         return m_open_table.at(k);
     }
 
@@ -85,8 +89,15 @@ public:
         return m_open_table[k];
     }
 
+    const Value& operator[](Key &k) const{
+        return m_open_table[k];
+    }
+
+    std::vector<std::pair<Key, Value>> vetorize(){
+        return m_open_table.vetorize();
+    }
     //destrutor
-    ~OpenTableMap() = default;
+    ~OpenHashMap() = default;
 };
 
 #endif //#END_OF_DICIONARIO_AVL_HPP

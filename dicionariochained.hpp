@@ -7,13 +7,13 @@
 
 template <typename Key, typename Value>
 
-class DicionarioChainedHash{
+class ChainedHashMap{
 private:
     ChainedHashTable<Key, Value> m_chained_table;
 
     //construtor
 public:
-    DicionarioChainedHash(){
+    ChainedHashMap(){
         m_chained_table;
     }
 
@@ -48,6 +48,10 @@ public:
     }
 
     Value& at(const Key &k){
+        return m_chained_table.at(k);
+    }
+
+    const Value& at(const Key &k) const{
         return m_chained_table.at(k);
     }
 
@@ -86,8 +90,15 @@ public:
         return m_chained_table[k];
     }
 
+    const Value& operator[](Key &k) const{
+        return m_chained_table[k];
+    }
+
+    std::vector<std::pair<Key, Value>> vetorize(){
+        return m_chained_table.vetorize();
+    }
     //destrutor
-    ~DicionarioChainedHash() = default;
+    ~ChainedHashMap() = default;
 };
 
 #endif //#END_OF_DICIONARIO_AVL_HPP

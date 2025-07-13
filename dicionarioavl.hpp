@@ -54,7 +54,7 @@ public:
     }
 
 
-    const Value& at(const Key &k){
+    const Value& at(const Key &k) const{
         return m_avl.at(k);
     }
 

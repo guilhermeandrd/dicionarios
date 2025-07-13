@@ -32,7 +32,7 @@ public:
     }
 
     //update
-    bool update(Key k, Value){
+    bool update(Key k, Value v){
         return !m_rb.insert(k, v);
     }
 
@@ -47,6 +47,10 @@ public:
     }
 
     Value& at(const Key &k){
+        return m_rb.at(k);
+    }
+
+    const Value& at(const Key &k) const{
         return m_rb.at(k);
     }
 
@@ -83,6 +87,14 @@ public:
     //iterador
     Value& operator[](Key &k){
         return m_rb[k];
+    }
+
+    const Value& operator[](Key &k) const{
+        return m_rb[k];
+    }
+
+    std::vector<std::pair<Key, Value>> vetorize(){
+        return m_rb.vetorize();
     }
 
     //destrutor
