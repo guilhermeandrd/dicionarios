@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <sstream>
 #include <ctime>
+#include <chrono>
 
 #include <unicode/unistr.h>
 #include <unicode/uniset.h>
@@ -28,6 +29,8 @@ using namespace std;
 #define FREQ_HPP
 
 bool ordena = false;
+//TODO soh falta a formatação
+string maior = "";
 
 template <typename Class>
 void readFile(ifstream &file, Class &teste) {
@@ -38,7 +41,10 @@ void readFile(ifstream &file, Class &teste) {
     icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]['’]"); // Inclui ambos tipos de apóstrofos
     UErrorCode status = U_ZERO_ERROR;
     icu::UnicodeSet wordChars(pattern, status);
-    
+    icu::UnicodeString patternSort = UNICODE_STRING_SIMPLE("a-z, A-Z, '");
+    UErrorCode statusSort = U_ZERO_ERROR;
+    icu::UnicodeSet wordSort(patternSort, statusSort);
+
     while(getline(file, linha)) {
         stringstream ss;
         ss << linha;
@@ -69,6 +75,10 @@ void readFile(ifstream &file, Class &teste) {
                 if (ch == '-' && wordChars.contains(chAfter)) {
                     cleanWord.append('-');
                 }
+
+                if(!wordSort.contains(ch)){
+                    ordena = true;
+                }
                 
                 if (U_IS_SUPPLEMENTARY(ch)) {
                     ++i;
@@ -77,6 +87,12 @@ void readFile(ifstream &file, Class &teste) {
             
             cleanWord.toLower();
             string key;
+
+            //TODO ver se é a maior
+            if(key.size() > maior.size())
+                maior = key;
+
+
             cleanWord.toUTF8String(key);
             if (!key.empty())
                 teste[key]++;
@@ -148,7 +164,7 @@ void readFile(ifstream &file, MapAvl<string, int>& teste) {
 
 
 
-void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoDic"){
+void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoDic", auto inicio = std::chrono::high_resolution_clock::now(), bool temRotacao = false, size_t metrica1= 0, size_t metrica2 = 0){
 
     //tratamento do nome do arquivo
     if(nameFile == "impressaoDic" || nameFile.empty()){
@@ -169,14 +185,43 @@ void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoD
     if(!file.is_open())
         throw std::runtime_error("erro ao abrir o arquivo de frequencia");
 
+
+    //CABECAO DO ARQUIVO
+    //cabeçalho da avl
+    auto fim = std::chrono::high_resolution_clock::now();
+
+    auto duracao = fim - inicio;
+    auto duracao_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(duracao);    
+    
+    if(temRotacao){
+        file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
+        << "tempo de compilação: " << duracao_ns.count() << " nanosegundos"<< endl
+        << "números de comparações de chaves: " << metrica1 << endl
+        << "número de rotações:" << metrica2 << endl
+        << endl << "FREQUENCIA: " << endl;
+    //cabeçalho da tabela hash
+    }else{
+        file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
+        << "tempo de compilação: " << duracao_ns.count() << " nanosegundos"<< endl
+        << "números de comparações de chaves: " << metrica1 << endl
+        << "número de colisões: " << metrica2 << endl
+        << endl << "FREQUENCIA: " << endl;
+    }
+    
     for(auto& node : dados){
         file << node.first << " " << node.second << endl;
     }
+
+    //TODO colocar ponteiro no comeco para colocar o cabeçalho
 
 }
 
 void frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
+    //inicia relogio de contagem
+    auto inicio = std::chrono::high_resolution_clock::now();
+
+
     if(!file.is_open())
         throw std::runtime_error("arquivo não foi aberto");
     
@@ -184,47 +229,55 @@ void frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = 
 
     vector<pair<string, int>> vetorDic = dic.vetorize();
 
-    ofstream fileOut("teste.dic");
-
-    if(!fileOut.is_open())
-         throw std::runtime_error("arquivo não foi aberto");
         
     if(ordena){
-        //TODO sort com icucomparator
+        IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
+
+        std::sort(vetorDic.begin(), vetorDic.end(), 
+            [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
+                // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
+                return comparadorPtBR(a.first, b.first);
+            });        
     }else{
         sort(vetorDic.begin(), vetorDic.end());
     }
 
-    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
-    gerarArquivo(vetorDic, nameFile);
+    gerarArquivo(vetorDic, nameFile, inicio, false, dic.counter_collision(), dic.counter_collision());
+
 }
 
 void frequencia(ChainedHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
+    auto inicio = std::chrono::high_resolution_clock::now();
+
     if(!file.is_open())
-        throw std::runtime_error("arquivo não foi aberto");
+    throw std::runtime_error("arquivo não foi aberto");
     
     readFile(file, dic);
-
+    
     vector<pair<string, int>> vetorDic = dic.vetorize();
 
-    ofstream fileOut("teste.dic");
-
-    if(!fileOut.is_open())
-         throw std::runtime_error("arquivo não foi aberto");
     
     if(ordena){
-        //TODO sort com icucomparator
+        //sort com icucomparator
+        IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
+        std::sort(vetorDic.begin(), vetorDic.end(), 
+        [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
+            // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
+            return comparadorPtBR(a.first, b.first);
+        }
+    );
     }else{
         sort(vetorDic.begin(), vetorDic.end());
     }
-
-    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
-    gerarArquivo(vetorDic, nameFile);
+    
+    gerarArquivo(vetorDic, nameFile, inicio, false, dic.counter_comparator(), dic.counter_collision());
 }
 
 void frequencia(MapRb<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
+    auto inicio = std::chrono::high_resolution_clock::now();
+
     if(!file.is_open())
         throw std::runtime_error("arquivo não foi aberto");
     
@@ -232,21 +285,22 @@ void frequencia(MapRb<string, int> dic, ifstream &file, string nameFile = "impre
 
     vector<pair<string, int>> vetorDic = dic.vetorize();
 
-    ofstream fileOut("teste.dic");
-
-    if(!fileOut.is_open())
-         throw std::runtime_error("arquivo não foi aberto");
-
     if(ordena){
-        //TODO sort com icucomparator
-        sort(vetorDic.begin(), vetorDic.end());
+        //sort com icucomparator
+            IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
+
+    std::sort(vetorDic.begin(), vetorDic.end(), 
+        [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
+            // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
+            return comparadorPtBR(a.first, b.first);
+        });    
     }
 
-    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
-    gerarArquivo(vetorDic, nameFile);
+    gerarArquivo(vetorDic, nameFile, inicio, true, dic.counter_comparator(), dic.counter_rotation());
 }
 
 void frequencia(MapAvl<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+    auto inicio = std::chrono::high_resolution_clock::now();
 
     if(!file.is_open())
         throw std::runtime_error("arquivo não foi aberto");
@@ -261,12 +315,17 @@ void frequencia(MapAvl<string, int> dic, ifstream &file, string nameFile = "impr
          throw std::runtime_error("arquivo não foi aberto");
     
     if(ordena){
-        //TODO sort com icucomparator
-        sort(vetorDic.begin(), vetorDic.end());
+        //sort com icucomparator
+        IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
+
+        std::sort(vetorDic.begin(), vetorDic.end(), 
+            [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
+                // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
+                return comparadorPtBR(a.first, b.first);
+            });       
     }
 
-    //TODO diferenciar as tabelas das arvores por que as tabelas sempre ordenam
-    gerarArquivo(vetorDic, nameFile);
+    gerarArquivo(vetorDic, nameFile, inicio, true, dic.counter_comparator(), dic.counter_rotation());
 }
 
 /*
