@@ -7,6 +7,7 @@
 #include <sstream>
 #include <ctime>
 #include <chrono>
+#include <iomanip>
 
 #include <unicode/unistr.h>
 #include <unicode/uniset.h>
@@ -30,8 +31,7 @@ using namespace std;
 
 bool ordena = false;
 //TODO soh falta a formatação
-string maior = "";
-
+size_t larguraMaxima = 0;
 template <typename Class>
 void readFile(ifstream &file, Class &teste) {
     string linha;
@@ -41,9 +41,8 @@ void readFile(ifstream &file, Class &teste) {
     icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]['’]"); // Inclui ambos tipos de apóstrofos
     UErrorCode status = U_ZERO_ERROR;
     icu::UnicodeSet wordChars(pattern, status);
-    icu::UnicodeString patternSort = UNICODE_STRING_SIMPLE("a-z, A-Z, '");
     UErrorCode statusSort = U_ZERO_ERROR;
-    icu::UnicodeSet wordSort(patternSort, statusSort);
+    icu::UnicodeSet wordSort("[[a-z'’-][A-Z]]", statusSort);
 
     while(getline(file, linha)) {
         stringstream ss;
@@ -76,7 +75,7 @@ void readFile(ifstream &file, Class &teste) {
                     cleanWord.append('-');
                 }
 
-                if(!wordSort.contains(ch)){
+                if(!wordSort.contains(ch) && ch != 0x2019 && wordChars.contains(ch)){
                     ordena = true;
                 }
                 
@@ -89,13 +88,16 @@ void readFile(ifstream &file, Class &teste) {
             string key;
 
             //TODO ver se é a maior
-            if(key.size() > maior.size())
-                maior = key;
-
-
+            
+            
             cleanWord.toUTF8String(key);
             if (!key.empty())
-                teste[key]++;
+            teste[key]++;
+            icu::UnicodeString keyUni = icu::UnicodeString::fromUTF8(key);
+
+            if(cleanWord.length() > larguraMaxima){
+                larguraMaxima = cleanWord.length()+1;
+            }
         }
     }
     file.close();
@@ -163,7 +165,7 @@ void readFile(ifstream &file, MapAvl<string, int>& teste) {
 
 
 
-
+//TODO ajeitar relogio da funcao para o que o arquivo pediu
 void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoDic", auto inicio = std::chrono::high_resolution_clock::now(), bool temRotacao = false, size_t metrica1= 0, size_t metrica2 = 0){
 
     //tratamento do nome do arquivo
@@ -192,13 +194,15 @@ void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoD
 
     auto duracao = fim - inicio;
     auto duracao_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(duracao);    
-    
+    size_t larguraColuna = larguraMaxima + 4;
+    size_t larguraAcentuada = larguraColuna + 1;
+
     if(temRotacao){
         file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
         << "tempo de compilação: " << duracao_ns.count() << " nanosegundos"<< endl
         << "números de comparações de chaves: " << metrica1 << endl
         << "número de rotações:" << metrica2 << endl
-        << endl << "FREQUENCIA: " << endl;
+        << endl;
     //cabeçalho da tabela hash
     }else{
         file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
@@ -207,13 +211,21 @@ void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoD
         << "número de colisões: " << metrica2 << endl
         << endl << "FREQUENCIA: " << endl;
     }
-    
+    file << std::left << std::setw(larguraColuna) << "Palavra" << "Frequencia" << endl;
+
+    file << string(larguraColuna + 12, '-') << endl;
+
     for(auto& node : dados){
-        file << node.first << " " << node.second << endl;
+
+        icu::UnicodeString palavraAcentuada = icu::UnicodeString::fromUTF8(node.first);
+
+        if(node.first.length() != palavraAcentuada.length()){
+            file << left << setw(larguraAcentuada) << node.first << node.second << endl;
+        }else{
+            file << left << setw(larguraColuna) << node.first << node.second << endl;
+        }
+
     }
-
-    //TODO colocar ponteiro no comeco para colocar o cabeçalho
-
 }
 
 void frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
@@ -237,12 +249,14 @@ void frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = 
             [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
                 // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
                 return comparadorPtBR(a.first, b.first);
-            });        
+            });
+        
+        cout << "foi ordenado por icu" << endl;
     }else{
         sort(vetorDic.begin(), vetorDic.end());
     }
 
-    gerarArquivo(vetorDic, nameFile, inicio, false, dic.counter_collision(), dic.counter_collision());
+    gerarArquivo(vetorDic, nameFile, inicio, false, dic.counter_comparator(), dic.counter_collision());
 
 }
 
