@@ -14,9 +14,7 @@ private:
     AvlTree<Key, Value> m_avl;
 public:
     //construtor
-    MapAvl(){
-        m_avl;
-    }
+    MapAvl() = default;
 
     //construtor com avl
     /*MapAvl(AvlTree<Key, Value> p_avl){

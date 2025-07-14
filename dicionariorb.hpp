@@ -12,9 +12,7 @@ private:
 
 public:
     //construtor
-    MapRb(){
-        m_rb;
-    }
+    MapRb() = default;
 
     //construtor com avl
     /*MapRb(RBtree<Key, Value> p_chained_table){

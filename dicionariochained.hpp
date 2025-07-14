@@ -13,10 +13,8 @@ private:
 
     //construtor
 public:
-    ChainedHashMap(){
-        m_chained_table;
-    }
-
+    ChainedHashMap() = default;
+    
     //construtor com tabela encadeada
     /*DicionarioChainedHash(ChainedHashTable<Key, Value> p_chained_table){
         m_chained_table = p_chained_table;

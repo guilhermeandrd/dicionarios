@@ -12,9 +12,7 @@ private:
 
 public:
     //construtor
-    OpenHashMap(){
-        m_open_table;
-    }
+    OpenHashMap() = default;
 
     //construtor com avl
     /*OpenHashMap(OpenHashTable<Key, Value> p_open_table){
