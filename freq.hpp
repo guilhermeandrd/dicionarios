@@ -95,8 +95,9 @@ void readFile(ifstream &file, Class &teste) {
             teste[key]++;
             icu::UnicodeString keyUni = icu::UnicodeString::fromUTF8(key);
 
-            if(cleanWord.length() > larguraMaxima){
-                larguraMaxima = cleanWord.length()+1;
+            size_t lengthCW = cleanWord.length();
+            if(lengthCW > larguraMaxima){
+                larguraMaxima = cleanWord.length();
             }
         }
     }
@@ -195,31 +196,33 @@ void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoD
     auto duracao = fim - inicio;
     auto duracao_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(duracao);    
     size_t larguraColuna = larguraMaxima + 4;
-    size_t larguraAcentuada = larguraColuna + 1;
-
+    
     if(temRotacao){
         file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
         << "tempo de compilação: " << duracao_ns.count() << " nanosegundos"<< endl
         << "números de comparações de chaves: " << metrica1 << endl
         << "número de rotações:" << metrica2 << endl
         << endl;
-    //cabeçalho da tabela hash
+        //cabeçalho da tabela hash
     }else{
         file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
         << "tempo de compilação: " << duracao_ns.count() << " nanosegundos"<< endl
         << "números de comparações de chaves: " << metrica1 << endl
         << "número de colisões: " << metrica2 << endl
-        << endl << "FREQUENCIA: " << endl;
+        << endl;
     }
     file << std::left << std::setw(larguraColuna) << "Palavra" << "Frequencia" << endl;
-
+    
     file << string(larguraColuna + 12, '-') << endl;
-
+    
     for(auto& node : dados){
-
+        
         icu::UnicodeString palavraAcentuada = icu::UnicodeString::fromUTF8(node.first);
+        size_t lengthNF = node.first.length();
+        size_t lengthPA = palavraAcentuada.length();
 
-        if(node.first.length() != palavraAcentuada.length()){
+        if(lengthNF > lengthPA){
+            size_t larguraAcentuada = larguraColuna + (lengthNF - lengthPA);
             file << left << setw(larguraAcentuada) << node.first << node.second << endl;
         }else{
             file << left << setw(larguraColuna) << node.first << node.second << endl;
