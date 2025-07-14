@@ -53,9 +53,14 @@ int main(int argc, char* argv[]) {
         frequencia(dic, file, nameFile);
 
     }
-    else 
-        cout << "Nome da estrutura errado ou estrutura inexistente" 
-        << "As estruturas tem os seguintes nomes" << endl;
-
+    else{
+        cout << "Nome da estrutura errado ou estrutura inexistente" << endl
+             << "As estruturas tem os seguintes nomes-------------" << endl
+             << "dicionarioAvl------------------------------------" << endl
+             << "dicionarioRb-------------------------------------" << endl
+             << "dicionarioChained--------------------------------" << endl
+             << "dicionarioOpen-----------------------------------" << endl;
+    }
+        
     return 0;
 }
