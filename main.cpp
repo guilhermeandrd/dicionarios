@@ -17,7 +17,7 @@ using namespace std;
 #include "dicionarioopen.hpp"
 
 //frencia
-#include "freq.hpp"
+#include "freqclass.hpp"
 
 int main(int argc, char* argv[]) {
     
@@ -39,19 +39,18 @@ int main(int argc, char* argv[]) {
     
     if(segundo == "dicionarioAvl"){
         MapAvl<string, int> dic;
-        frequencia(dic, file, nameFile);
+        Frequencia(dic, file, nameFile);
 
     }else if(segundo == "dicionarioRb"){
         MapRb<string, int> dic;
-        frequencia(dic, file, nameFile);
+        Frequencia(dic, file, nameFile);
     }else if(segundo == "dicionarioOpen"){
         OpenHashMap<string, int> dic;
-        frequencia(dic, file, nameFile);
+        Frequencia(dic, file, nameFile);
 
     }else if(segundo == "dicionarioChained"){
         ChainedHashMap<string, int> dic;
-        frequencia(dic, file, nameFile);
-
+        Frequencia(dic, file, nameFile);
     }
     else{
         cout << "Nome da estrutura errado ou estrutura inexistente" << endl
