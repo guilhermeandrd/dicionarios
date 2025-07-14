@@ -1,37 +1,37 @@
 A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: 
-tempo de compilação: 1173028 nanosegundos
+tempo de compilação: 1166884 nanosegundos
 números de comparações de chaves: 94
 número de colisões: 8
 
-FREQUENCIA: 
-Palavra          Frequencia
------------------------------
-a                18
-aranha           6
-chuva            6
-contente         3
-continua         3
-derrubou         3
-desce            3
-descer           1
-desobediente     3
-dona             6
-e                12
-é                3
-ela              3
-está             3
-forte            3
-já               6
-nunca            3
-o                3
-parede           3
-passou           3
-pela             3
-sobe             6
-sol              3
-subir            2
-subiu            3
-surgindo         3
-teimosa          3
-veio             3
-vem              3
+Palavra         Frequencia
+----------------------------
+a               18
+aranha          6
+chuva           6
+contente        3
+continua        3
+coração         1
+derrubou        3
+desce           3
+descer          1
+desobediente    3
+dona            6
+e               12
+é               3
+ela             3
+está            3
+forte           3
+já              6
+nunca           3
+o               3
+parede          3
+passou          3
+pela            3
+sobe            6
+sol             3
+subir           2
+subiu           3
+surgindo        3
+teimosa         3
+veio            3
+vem             3
