@@ -174,7 +174,6 @@ int main() {
 
     vector<pair<string, int>> rb = TreeRbTeste.vetorize();
 
-    //TODO fazer uma funca begin para cada uma das estruturas
     TreeRbTeste.impressao("xique_xique2.txt");
     
     cout << TreeRbTeste.size();
