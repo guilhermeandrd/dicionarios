@@ -2,6 +2,7 @@
 #include <unicode/coll.h> //para uso do collator
 
 
+//TODO revisar isso aqui e comentar
 struct IcuComparator{
 
     //ponteiro para o comparator icu
@@ -27,8 +28,6 @@ struct IcuComparator{
     bool operator()(const std::string& a, const std::string& b) const{
         
         if(!collator){
-            //TODO fallback
-            ;
             UErrorCode status = U_ZERO_ERROR;
             collator = icu::Collator::createInstance(icu::Locale("en_USA"), status);
             return a < b;

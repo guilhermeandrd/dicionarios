@@ -122,7 +122,6 @@ public:
      * 
      * @param v novo valor do par
      * 
-     * //TODO melhorar isso aqui
      */
     bool update(Key k, Value v){
         return _update(m_root, k , v);

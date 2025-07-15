@@ -16,7 +16,7 @@ using namespace std;
 #include "dicionariorb.hpp"
 #include "dicionarioopen.hpp"
 
-//frencia
+//frequencia
 #include "freqclass.hpp"
 
 int main(int argc, char* argv[]) {
