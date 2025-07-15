@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "string_view": "cpp"
     },
     "makefile.configureOnOpen": true
 }
