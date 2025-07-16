@@ -392,6 +392,79 @@ public:
         return retorno;
     }
 
+
+    Value& operator[](const Key& k){
+
+
+        //tratar caso para quando arvore for vazia
+        if (m_root == nullptr) {
+            m_root = new Node(k, Value(), 1, nullptr, nullptr);
+            m_size++;
+            return m_root->n_pair.second;
+        }
+
+        std::stack<Node*> nodePath;
+
+        Node* node = m_root;
+    
+        while(node!=nullptr){
+
+            if(k > node->n_pair.first){
+                nodePath.push(node);
+                node = node->right;
+            }else if(k == node->n_pair.first){
+                return node->n_pair.second;
+            }else{
+                nodePath.push(node);
+                node = node->left;
+            }
+        }
+
+        Node* pai = nodePath.top();
+
+        //se achar node
+        //pilha eh descarta
+        Node* nohInsert =  nullptr;
+        if(k < pai->n_pair.first){
+            pai->left = new Node(k, Value(), 1, nullptr, nullptr);
+            nohInsert = pai->left;
+        }else{
+            pai->right = new Node(k, Value(), 1, nullptr, nullptr);
+            nohInsert = pai->right;
+        }
+
+        while(!nodePath.empty()){
+
+            node = nodePath.top();
+            
+            nodePath.pop();
+            
+            Node* transplant = fixup_node(node, k);
+            if(nodePath.empty()){
+                m_root = transplant;
+                break;
+            }else{
+                Node* pai = nodePath.top();
+
+                if(pai->left == node)
+                    pai->left = transplant;
+                else pai ->right = transplant;
+
+            }
+        }
+
+        //se nao
+        //insere
+
+        //e desempilha (VOLTA NO caminho, dando fixup)
+        m_size++;
+        return nohInsert->n_pair.second;
+    }
+
+    const Value& operator[](const Key& k) const{
+        return at(k);
+    }
+
 private:
 
     /**
