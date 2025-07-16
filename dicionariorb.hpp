@@ -11,18 +11,9 @@ private:
     RBtree<Key, Value> m_rb;
 
 public:
+
     //construtor
     MapRb() = default;
-
-    //construtor com avl
-    /*MapRb(RBtree<Key, Value> p_chained_table){
-        m_rb = p_chained_table;
-    }*/
-
-    //construtor com avl
-    /*MapRbl(const RBtree<Key, Value> p_chained_table){
-        m_rb = p_avl;
-    }*/
 
     //insert
     bool add(Key k, Value v){
