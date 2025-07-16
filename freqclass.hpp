@@ -1,3 +1,15 @@
+/**
+ * @file freqclass.hpp
+ * @author Guilherme Andrade da Silva | Github: (@guilhermeandrd)
+ * @brief Árvore Binária de Busca Balanceada (AVL)
+ * Estrutura de dados avancada - 2025.1
+ * @version 0.1
+ * @date 2025-07-01
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include <iostream>
 #include <utility>
 #include <string>
@@ -21,8 +33,6 @@
 #include "dicionarioopen.hpp"
 #include "dicionariorb.hpp"
 
-using namespace std;
-
 #ifndef FREQ_HPP
 #define FREQ_HPP
 
@@ -33,12 +43,20 @@ private:
     size_t larguraMaxima = 0;
 
     template <typename Class>
+    /**
+     * @brief
+     * 
+     * @param
+     * 
+     * @return
+     * 
+     * //TODO anotar isso 
+     */
     void readFile(ifstream &file, Class &teste) {
         string linha;
         string k;
         
-        // CONFIGURAÇÃO DO UNICODE-SET - Adicione o smart quote (') como caractere válido
-        icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]"); // Inclui ambos tipos de apóstrofos
+        icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]"); 
         UErrorCode status = U_ZERO_ERROR;
         icu::UnicodeSet wordChars(pattern, status);
         UErrorCode statusSort = U_ZERO_ERROR;
@@ -85,6 +103,7 @@ private:
                 cleanWord.toUTF8String(key);
                 if (!key.empty())
                 teste[key]++;
+                //se nao tem if !contains -> insere com valor 0. at ++;
                 icu::UnicodeString keyUni = icu::UnicodeString::fromUTF8(key);
 
                 size_t lengthCW = cleanWord.length();
@@ -97,11 +116,21 @@ private:
     }
 
 
-    //TODO ajeitar relogio da funcao para o que o arquivo pediu
-    void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoDic", auto inicio = std::chrono::high_resolution_clock::now(), bool temRotacao = false, size_t metrica1= 0, size_t metrica2 = 0){
+    //TODO verificar se o relogio da funcao para o que o arquivo pediu
+    /**
+     * @brief
+     * 
+     * @param
+     * 
+     * @return
+     * 
+     * //TODO anotar isso 
+     */
+    void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoDic", auto duracao = std::chrono::high_resolution_clock::now(), bool temRotacao = false, size_t metrica1= 0, size_t metrica2 = 0){
         
-        //TODO ver se isso aqui resolve o erro
-        auto fim = std::chrono::high_resolution_clock::now();
+        //auto fim = std::chrono::high_resolution_clock::now();
+
+
         //tratamento do nome do arquivo
         if(nameFile == "impressaoDic" || nameFile.empty()){
             time_t now = time(0);
@@ -125,7 +154,7 @@ private:
         //CABECAO DO ARQUIVO
         //cabeçalho da avl
 
-        auto duracao = fim - inicio;
+        //auto duracao = fim - inicio;
         auto duracao_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(duracao);    
         size_t larguraColuna = larguraMaxima + 4;
         
@@ -162,8 +191,18 @@ private:
 
         }
     }
+
 public:
 
+    /**
+     * @brief
+     * 
+     * @param
+     * 
+     * @return
+     * 
+     * //TODO anotar isso 
+     */
     Frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
         //inicia relogio de contagem
@@ -192,9 +231,22 @@ public:
             sort(vetorDic.begin(), vetorDic.end());
         }
 
-        gerarArquivo(vetorDic, nameFile, inicio, false, dic.counter_comparator(), dic.counter_collision());
+        //fim da contagem (tabela foi gerada agora vamos só)
+        auto fim = std::chrono::high_resolution_clock::now();
+        auto duracao = fim - inicio;
+
+        gerarArquivo(vetorDic, nameFile, duracao, false, dic.counter_comparator(), dic.counter_collision());
     }
 
+    /**
+     * @brief
+     * 
+     * @param
+     * 
+     * @return
+     * 
+     * //TODO anotar isso 
+     */
     Frequencia(ChainedHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
         auto inicio = std::chrono::high_resolution_clock::now();
@@ -219,10 +271,23 @@ public:
         }else{
             sort(vetorDic.begin(), vetorDic.end());
         }
+
+        auto fim = std::chrono::high_resolution_clock::now();
+        auto duracao = fim - inicio;
+
     
-        gerarArquivo(vetorDic, nameFile, inicio, false, dic.counter_comparator(), dic.counter_collision());
+        gerarArquivo(vetorDic, nameFile, duracao, false, dic.counter_comparator(), dic.counter_collision());
     }
 
+    /**
+     * @brief
+     * 
+     * @param
+     * 
+     * @return
+     * 
+     * //TODO anotar isso 
+     */
     Frequencia(MapRb<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
         auto inicio = std::chrono::high_resolution_clock::now();
@@ -245,9 +310,21 @@ public:
             });    
         }
 
-        gerarArquivo(vetorDic, nameFile, inicio, true, dic.counter_comparator(), dic.counter_rotation());
+        auto fim = std::chrono::high_resolution_clock::now();
+        auto duracao = fim - inicio;
+
+        gerarArquivo(vetorDic, nameFile, duracao, true, dic.counter_comparator(), dic.counter_rotation());
     }
 
+    /**
+     * @brief
+     * 
+     * @param
+     * 
+     * @return
+     * 
+     * //TODO anotar isso 
+     */
     Frequencia(MapAvl<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
         auto inicio = std::chrono::high_resolution_clock::now();
 
@@ -274,7 +351,10 @@ public:
                 });       
         }
 
-        gerarArquivo(vetorDic, nameFile, inicio, true, dic.counter_comparator(), dic.counter_rotation());
+        auto fim = std::chrono::high_resolution_clock::now();
+
+        auto duracao = fim - inicio;
+        gerarArquivo(vetorDic, nameFile, duracao, true, dic.counter_comparator(), dic.counter_rotation());
     }
 
     /*
