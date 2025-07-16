@@ -44,7 +44,10 @@ private:
     // Quando load_factor ultrapassa o valor de m_max_load_factor, 
     // eh preciso executar a operacao de rehashing.                   
     float m_max_load_factor;
+
+    //atributo busca que foi criado para o teste de verificao de quantas buscas sao feitas
     int busca;
+
     // tabela                               
     std::vector<std::list<std::pair<Key,Value>>> m_table;
 
@@ -452,15 +455,20 @@ public:
             }
         }
 
+        if(!m_table[slot].empty()) m_counter_collision++;
+
+        
         m_table[slot].push_back({k, Value()});
         m_number_of_elements++;
         busca++;
         return m_table[slot].back().second;
     }
 
+    //retornas buscas foram feitas com o operador []
     int buscaint(){
         return this->busca;
     }
+
     /**
      * @brief Versao const da sobrecarga do operador de indexacao.
      * Se k corresponder a chave de um elemento na tabela, a funcao

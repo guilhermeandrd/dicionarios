@@ -38,11 +38,11 @@ private:
         string k;
         
         // CONFIGURAÇÃO DO UNICODE-SET - Adicione o smart quote (') como caractere válido
-        icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]['’]"); // Inclui ambos tipos de apóstrofos
+        icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]"); // Inclui ambos tipos de apóstrofos
         UErrorCode status = U_ZERO_ERROR;
         icu::UnicodeSet wordChars(pattern, status);
         UErrorCode statusSort = U_ZERO_ERROR;
-        icu::UnicodeSet wordSort("[[a-z'’-][A-Z]]", statusSort);
+        icu::UnicodeSet wordSort("[[a-z-][A-Z]]", statusSort);
 
         while(getline(file, linha)) {
             stringstream ss;
@@ -58,16 +58,6 @@ private:
                     UChar32 ch = tratar.char32At(i);
                     UChar32 chAfter = tratar.char32At(e);
                     UChar32 chBefore = tratar.char32At(f);
-                    
-                    // Tratamento para smart quote (')
-                    //se for um smart code e a proxima letra tiver no 
-                    //TODO talvez eu tenha que considerar os dois tipos de smartquote
-                    if (ch == 0x2019 && i!=0) { // Unicode para smart quote (')
-                        // Verifica se é um smart quote válido (entre letras)
-                    // if (wordChars.contains(tratar.char32At(i-1))) {
-                            cleanWord.append('\'');
-                    // }
-                    }
                     
                     if (wordChars.contains(ch)) {
                         cleanWord.append(ch);
@@ -105,84 +95,6 @@ private:
         }
         file.close();
     }
-
-
-void readFile(ifstream &file, MapAvl<string, int> &teste) {
-        string linha;
-        string k;
-        
-        // CONFIGURAÇÃO DO UNICODE-SET - Adicione o smart quote (') como caractere válido
-        icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]['’]"); // Inclui ambos tipos de apóstrofos
-        UErrorCode status = U_ZERO_ERROR;
-        icu::UnicodeSet wordChars(pattern, status);
-        UErrorCode statusSort = U_ZERO_ERROR;
-        icu::UnicodeSet wordSort("[[a-z'’-][A-Z]]", statusSort);
-
-        while(getline(file, linha)) {
-            stringstream ss;
-            ss << linha;
-            
-            while(ss >> k) {
-                icu::UnicodeString tratar = icu::UnicodeString::fromUTF8(k);
-                icu::UnicodeString cleanWord;
-                
-                for (int32_t i = 0; i < tratar.length(); ++i) {
-                    int32_t e = i + 1;
-                    int32_t f = i -1;
-                    UChar32 ch = tratar.char32At(i);
-                    UChar32 chAfter = tratar.char32At(e);
-                    UChar32 chBefore = tratar.char32At(f);
-                    
-                    // Tratamento para smart quote (')
-                    //se for um smart code e a proxima letra tiver no 
-                    if (ch == 0x2019) { // Unicode para smart quote (')
-                        // Verifica se é um smart quote válido (entre letras)
-                    // if (wordChars.contains(tratar.char32At(i-1))) {
-                            cleanWord.append('\'');
-                    // }
-                    }
-                    
-                    if (wordChars.contains(ch)) {
-                        cleanWord.append(ch);
-                    }
-                    
-                    // Tratamento para hífen
-                    if (u_isalpha(chAfter) && ch == '-' && u_isalpha(chBefore)) {
-                        cleanWord.append('-');
-                    }
-
-
-                    if(!wordSort.contains(ch) && ch != 0x2019 && wordChars.contains(ch)){
-                        ordena = true;
-                    }
-                    
-                    if (U_IS_SUPPLEMENTARY(ch)) {
-                        ++i;
-                    }
-                }
-                
-                cleanWord.toLower();
-                string key;
-
-                //TODO ver se é a maior
-                
-                
-                cleanWord.toUTF8String(key);
-                if (!key.empty()){
-                    if(teste.contains(key)) teste.at(key)++;
-                    else teste.add(key, 1);
-                }
-                icu::UnicodeString keyUni = icu::UnicodeString::fromUTF8(key);
-
-                size_t lengthCW = cleanWord.length();
-                if(lengthCW > larguraMaxima){
-                    larguraMaxima = cleanWord.length();
-                }
-            }
-        }
-        file.close();
-    }
-
 
 
     //TODO ajeitar relogio da funcao para o que o arquivo pediu

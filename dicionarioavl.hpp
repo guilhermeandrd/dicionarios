@@ -90,6 +90,13 @@ public:
         return m_avl.vetorize();
     }
 
+    Value& operator[](const Key& k){
+        return m_avl[k];
+    }
+
+    const Value& operator[](const Key& k) const{
+        return m_avl[k];
+    }
 
     //destrutor
     ~MapAvl() = default;
