@@ -26,179 +26,131 @@ private:
     AvlTree<Key, Value> m_avl;
 
 public:
-    //construtor
+
      /**
-     * @brief
+     * @brief Construtor para dicionário avl, 
+     * ele usa o próprio construtor da árvore avl.
      * 
-     * @param
-     * 
-     * //TODO anotar isso 
      */
     MapAvl() = default;
 
 
-    //insert
      /**
-     * @brief
+     * @brief Função que insere um par chave-valor no dicionário avl.
+     * Caso a chave já existe, nada é feito.
      * 
-     * @param
+     * @param k := chave do par
      * 
-     * @return
+     * @param v := valor do par
      * 
-     * //TODO anotar isso 
      */
     void add(Key k, Value v){
         m_avl.insert(k, v);
     }
 
-    //update
      /**
-     * @brief
+     * @brief Função que atualiza um valor de um par chave-valor
+     * que já existe. Se o par não existir, é retornado false.
      * 
-     * @param
+     * @param k := chave do par
      * 
-     * @return
+     * @param v := valor do par
      * 
-     * //TODO anotar isso 
+     * @return True se e somente se tiver atualizado.
+     * 
      */
     bool update(Key k, Value v){
         return m_avl.update(k, v);
     }
 
-    //remove
      /**
-     * @brief
+     * @brief Remove um par chave-valor da estrutura se a chave 
+     * existir.
      * 
-     * @param
+     * @param k := chave do par chave-valor que será removido
      * 
-     * @return
-     * 
-     * //TODO anotar isso 
      */
     void remove(const Key k){
         m_avl.remove(k);
     }
 
-    //contains
      /**
-     * @brief
+     * @brief Função que verifica se um par chave-valor está contido 
+     * na estrutura. 
      * 
-     * @param
+     * @param k := chave do par chave-valor que será buscado
      * 
-     * @return
+     * @return True se e somente se o par com a chave k existir
      * 
-     * //TODO anotar isso 
      */
     bool contains(const Key k){
         return m_avl.contains(k);
     }
 
-    //at
      /**
-     * @brief
+     * @brief Retorna o valor do par chave-valor caso exista.
+     * Caso não, um erro é retornado.
      * 
-     * @param
+     * @param k := chave do par chave-valor, a qual o valor vai ser retornado
      * 
-     * @return
+     * @return Value& := referência do valor do par.
      * 
-     * //TODO anotar isso 
      */
     Value& at(const Key &k){
         return m_avl.at(k);
     }
 
-     /**
-     * @brief
+    /**
+     * @brief Versão const do at. 
+     * Retorna o valor constante do par chave-valor caso exista.
+     * Caso não, um erro é retornado.
      * 
-     * @param
+     * @param k := chave do par chave-valor, a qual o valor vai ser retornado
      * 
-     * @return
+     * @return Value& := referência do valor do par.
      * 
-     * //TODO anotar isso 
      */
     const Value& at(const Key &k) const{
         return m_avl.at(k);
     }
 
-    //impressao
      /**
-     * @brief
+     * @brief Retorna quantos pares estão armazenados na estrutura.
      * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
-     */
-    void impressao(std::string nameFile = "text.avl"){
-        m_avl.impressao(nameFile);
-    }
-
-    //size
-     /**
-     * @brief
-     * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
      */
     size_t size(){
         return m_avl.size();
     }
 
-    //counter rotation
      /**
-     * @brief
+     * @brief Retorna quantas rotações a estrutura já realizou.
      * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
      */
     size_t counter_rotation(){
         return m_avl.counter_rotation();
     }
 
-    //counter comparator
      /**
-     * @brief
+     * @brief Retorna quantas comparações de chaves
+     * a estrutura já realizou.
      * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
      */
     size_t counter_comparator(){
         return m_avl.counter_comparator();
     }
 
-    //empty
      /**
-     * @brief
+     * @brief Retorna true se e somente se a estrutura estiver vazia
      * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
      */
     bool empty(){
         return m_avl.empty();
     }
 
-    //clear
      /**
-     * @brief
-     * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
+     * @brief Limpa a estrutura, removendo todos os pares da estrutura.
+     * Ademais, tamanho é zerado, assim com as métricas da estrutura.
+     *
      */
     void clear(){
         m_avl.clear();
@@ -206,8 +158,6 @@ public:
 
      /**
      * @brief
-     * 
-     * @param
      * 
      * @return
      * 
@@ -218,40 +168,40 @@ public:
     }
 
      /**
-     * @brief
+     * @brief Sobrecarga do operador de indexacao.
+     * Se k corresponder a chave de um elemento do dicionário, a funcao
+     * retorna uma referencia ao seu valor. Caso contrario, 
+     * se k nao corresponder a chave de nenhum elemento do dicionário, 
+     * a funcao insere um novo elemento com essa chave e retorna um
+     * referencia ao seu valor. Observe que isso sempre aumenta 
+     * o tamanho da dicionário em um, mesmo se nenhum valor mapeado for atribuido 
+     * ao elemento (o elemento eh construido usando seu construtor padrao).
      * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
+     * @param k := chave
+     * @return Value& := valor associado a chave
      */
     Value& operator[](const Key& k){
         return m_avl[k];
     }
 
-     /**
-     * @brief
+    /**
+     * @brief Versao const da sobrecarga do operador de indexacao.
+     * Se k corresponder a chave de um elemento do dicionário, a funcao
+     * retorna uma referencia ao seu valor. Caso contrario, 
+     * se k nao corresponder a chave de nenhum elemento do dicionário, 
+     * a funcao lanca uma out_of_range exception.
      * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
+     * @param k := chave
+     * @return Value& := valor associado a chave
      */
     const Value& operator[](const Key& k) const{
         return m_avl[k];
     }
 
-    //destrutor
-     /**
-     * @brief
+    /**
+    * @brief Destrutor para dicionário avl, 
+     * ele usa o próprio destrutor da árvore avl.
      * 
-     * @param
-     * 
-     * @return
-     * 
-     * //TODO anotar isso 
      */
     ~MapAvl() = default;
 
