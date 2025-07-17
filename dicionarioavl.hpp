@@ -1,3 +1,15 @@
+/**
+ * @file dicionarioavl.hpp
+ * @author Guilherme Andrade da Silva | Github: (@guilhermeandrd)
+ * @brief Dicionário Implementado Com Árvoe Avl
+ * Estrutura de dados avancada - 2025.1
+ * @version 0.1
+ * @date 2025-07-17
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include <iostream>
 
 #include "estruturas_auxiliares/AVLTree.hpp"
@@ -12,15 +24,13 @@ template <typename Key, typename Value>
 class MapAvl{
 private:
     AvlTree<Key, Value> m_avl;
-public:
 
+public:
     //construtor
      /**
      * @brief
      * 
      * @param
-     * 
-     * @return
      * 
      * //TODO anotar isso 
      */
