@@ -585,6 +585,15 @@ public:
             }
     }
 
+    /**
+     * @brief cria um vetor da tabela na ordem em que os elementos estão dispostos,
+     * adcionando apenas os ativos.
+     * Se a tabela estiver vazia é lançada um throw invalid_argument.
+     * 
+     * @return vector<pair<Key, Value>> := vetor com pares do mesmo tipo da chave e do valor 
+     * da árvore.
+     * 
+     */
     std::vector<std::pair<Key, Value>> vetorize(){
         if(m_numbers_of_elements == 0)
             throw std::invalid_argument("a tabela open hash está vazia");

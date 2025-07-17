@@ -384,7 +384,19 @@ public:
     }
     
     //AS SOBRECARGAS FORAM FEITAS PARA MELHOR FUNCIONAMENTO DO CODIGO
-    //TODO aparentemente tá certo
+    /**
+     * @brief Sobrecarga do operador de indexacao.
+     * Se k corresponder a chave de um elemento na árvore, a funcao
+     * retorna uma referencia ao seu valor. Caso contrario, 
+     * se k nao corresponder a chave de nenhum elemento na árvore, 
+     * a funcao insere um novo elemento com essa chave e retorna um
+     * referencia ao seu valor. Observe que isso sempre aumenta 
+     * o tamanho da tabela em um, mesmo se nenhum valor mapeado for atribuido 
+     * ao elemento (o elemento eh construido usando seu construtor padrao).
+     * 
+     * @param k := chave
+     * @return Value& := valor associado a chave
+     */
     Value& operator[](const Key& k){
 
         //criação dos nós auxiliares
@@ -393,7 +405,7 @@ public:
 
       
         //PRIMEIRO PROCURA O NOH
-        //eu quero que ele procure o nó, se não achar
+        //se não achar
         //ele já sabe onde deve ser inserido e então o insere
         while(p != nil && p->n_pair.first!=k){
             //incrementa sempre por conta do while
@@ -438,18 +450,29 @@ public:
         p->right = this->nil;
         p->color = RED;
         
-        
+        //fazemos conserto da inserção
         insertFixup(p);
         m_size++;
 
+        //retornamos referencia ao valor do nó
         return p->n_pair.second;   
     }
 
+    /**
+     * @brief Versao const da sobrecarga do operador de indexacao.
+     * Se k corresponder a chave de um elemento na árvore, a funcao
+     * retorna uma referencia ao seu valor. Caso contrario, 
+     * se k nao corresponder a chave de nenhum elemento na árvore, 
+     * a funcao lanca uma out_of_range exception.
+     * 
+     * @param k := chave
+     * @return Value& := valor associado a chave
+     */
     const Value& operator[](const Key& k) const{
         return at(k);
     }
 
-    void impressao(std::string nameFile = "testeRB"){
+    /*void impressao(std::string nameFile = "testeRB"){
 
         //primeiro ocorre o tratamento da string
         
@@ -504,8 +527,16 @@ public:
         }
 
         file.close();
-    }
+    }*/
 
+    /**
+     * @brief cria um vetor da árvore em ordem simétrica
+     * O vetor já está ordenado, se a árvore estiver vazia é lançada um throw invalid_argument
+     * 
+     * @return vector<pair<Key, Value>> := vetor com pares do mesmo tipo da chave e do valor 
+     * da árvore.
+     * 
+     */
     std::vector<std::pair<Key, Value>> vetorize(){
 
          if(root==nil)

@@ -306,7 +306,7 @@ public:
         m_root = clear(m_root);
     }
     
-    void impressao(std::string nameFile = "testeAVL"){
+    /*void impressao(std::string nameFile = "testeAVL"){
 
         //primeiro ocorre o tratamento da string
         
@@ -361,9 +361,17 @@ public:
         }
 
         file.close();
-    }
+    }*/
 
     //O(N)
+     /**
+     * @brief cria um vetor da árvore em ordem simétrica
+     * O vetor já está ordenado, se a árvore estiver vazia é lançada um throw invalid_argument
+     * 
+     * @return vector<pair<Key, Value>> := vetor com pares do mesmo tipo da chave e do valor 
+     * da árvore.
+     * 
+     */
     std::vector<std::pair<Key,Value>> vetorize(){
 
         if(m_root==nullptr)
@@ -393,74 +401,154 @@ public:
     }
 
 
+     /**
+     * @brief Sobrecarga do operador de indexacao.
+     * Se k corresponder a chave de um elemento na árvore, a funcao
+     * retorna uma referencia ao seu valor. Caso contrario, 
+     * se k nao corresponder a chave de nenhum elemento na árvore, 
+     * a funcao insere um novo elemento com essa chave e retorna um
+     * referencia ao seu valor. Observe que isso sempre aumenta 
+     * o tamanho da tabela em um, mesmo se nenhum valor mapeado for atribuido 
+     * ao elemento (o elemento eh construido usando seu construtor padrao).
+     * 
+     * @param k := chave
+     * @return Value& := valor associado a chave
+     */
     Value& operator[](const Key& k){
 
-
-        //tratar caso para quando arvore for vazia
+        //caso base: á arvore está vazia
         if (m_root == nullptr) {
             m_root = new Node(k, Value(), 1, nullptr, nullptr);
             m_size++;
             return m_root->n_pair.second;
         }
 
+        //criamos pilha para registramos 
+        //o caminho do nó durante a procura
         std::stack<Node*> nodePath;
 
         Node* node = m_root;
-    
+        
+        //procura o nó (busca iterativa)
         while(node!=nullptr){
 
             if(k > node->n_pair.first){
+                m_counter_comparator++;
+
+                //inserimos esse node na pilha 
+                //para depois voltarmos nele
                 nodePath.push(node);
                 node = node->right;
             }else if(k == node->n_pair.first){
+                m_counter_comparator+=2;
+
+                //se achar retorna referencia ao seu valor
+                //caso 2: achamos o nó
                 return node->n_pair.second;
             }else{
+                m_counter_comparator+=2;
+
+                //inserimos esse node na pilha 
+                //para depois voltarmos nele
                 nodePath.push(node);
                 node = node->left;
             }
-        }
+        } 
 
-        Node* pai = nodePath.top();
+        //Caso 3: não achamos e a árvore não é vazia
+        //vamos inserir o nó
 
-        //se achar node
-        //pilha eh descarta
+        //topo da pilha é o pai do nó que vai ser inserido
+        Node* pai  = nodePath.top();
+
+        //noh insert para gravarmos o nó que inserimos
+        //isso é importante para resgatar o valor dele quando for retornar
         Node* nohInsert =  nullptr;
+        
+        //verificao para ver onde insere o nó
         if(k < pai->n_pair.first){
+            m_counter_comparator++;
+
             pai->left = new Node(k, Value(), 1, nullptr, nullptr);
             nohInsert = pai->left;
         }else{
+            m_counter_comparator++;
+
             pai->right = new Node(k, Value(), 1, nullptr, nullptr);
             nohInsert = pai->right;
         }
 
+        //while que vai consertar o caminho do noh (seus ancestrais)
         while(!nodePath.empty()){
 
+            //pegamos o topo do nó (pai do nó atual)
             node = nodePath.top();
             
+            //retiramos ele da pilha para agora o top
+            //ser o pai dele
             nodePath.pop();
             
+            //passamos o node consertado para outro nó
+            //agora vamos ver o que fazemos com ele
+            //onde vamos reinserir ele
             Node* transplant = fixup_node(node, k);
             if(nodePath.empty()){
+                //caso base : a pilha acabou (só resta a raiz)
+                //raiz recebe o nó consertado
                 m_root = transplant;
-                break;
-            }else{
-                Node* pai = nodePath.top();
 
+                //encerramos o loop
+                break;
+
+            //caso 2: ainda é nó para ser consertado
+            }else{
+
+                //guardamos o pai do nó atual que estamos consertando
+                //para ver onde vamos inserir a sub-árvore 
+                //que foi consertada (transplant)
+                Node* pai = nodePath.top();
+                
+                //se o nó da esquerda for igual ao nó que estamos lidando
+                //reinserimos na esquerda
+                //Caso 2 (a)
                 if(pai->left == node)
                     pai->left = transplant;
+                //caso não - inserimos na direita
+                //Caso 2 (b)
                 else pai ->right = transplant;
+
+                /*
+                isso é importante pois fixup realizou rotações
+                em node, que agora é transplant
+                então se não fizermos essa verificação, a árvore
+                poderá ficar desbalanceada ou quebramos a árvore
+                o que causará erros posteriores nas funções
+                ou um erro de segmentação ao tentar acessarmos um nó
+                que não existe mais (no caso não estar naquele local)
+                devido as rotações realizadas. basicamente,
+                reajustamos a raiz da sub-árvore.*/
 
             }
         }
 
-        //se nao
-        //insere
-
-        //e desempilha (VOLTA NO caminho, dando fixup)
+        //incrementamos size
         m_size++;
+
+        //retornamos o valor do nó que foi inserido
         return nohInsert->n_pair.second;
     }
+    
 
+     /**
+     * @brief Versao const da sobrecarga do operador de indexacao.
+     * Se k corresponder a chave de um elemento na árvore, a funcao
+     * retorna uma referencia ao seu valor. Caso contrario, 
+     * se k nao corresponder a chave de nenhum elemento na árvore, 
+     * a funcao lanca uma out_of_range exception.
+     * 
+     * @param k := chave
+     * @return Value& := valor associado a chave
+     */
     const Value& operator[](const Key& k) const{
         return at(k);
     }
@@ -743,7 +831,7 @@ private:
      * 
      * @return raiz para a nova arvore feita a remocao do noh e balanceada
      */
-    Node *remove (Node *node, Key key) {
+    Node *remove(Node *node, Key key) {
         if (node == nullptr) // node nao encontrado
             return nullptr;
 
