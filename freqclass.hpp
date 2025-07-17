@@ -1,10 +1,10 @@
 /**
  * @file freqclass.hpp
  * @author Guilherme Andrade da Silva | Github: (@guilhermeandrd)
- * @brief Árvore Binária de Busca Balanceada (AVL)
- * Estrutura de dados avancada - 2025.1
+ * @brief Frequência
+ *  
  * @version 0.1
- * @date 2025-07-01
+ * @date 2025-07-16
  * 
  * @copyright Copyright (c) 2025
  * 
@@ -36,26 +36,42 @@
 #ifndef FREQ_HPP
 #define FREQ_HPP
 
+/**
+ * 
+ * @brief Classe frequência: gera uma lista de frequencias das 
+ * palavras em ordem alfabetica, com a eficiencia conforme 
+ * o tipo de dicionario escolhido.
+ * 
+ * @tparam Class tipo da estrutura que vai ser usada para calcular a frequencia
+ * 
+ */
 class Frequencia{
 
 private:
+
+    //atributo usado para ver se ordenamos por icu ou nao
     bool ordena = false;
+
+    //atributo para formatação do arquivo de saída
     size_t larguraMaxima = 0;
 
     template <typename Class>
     /**
-     * @brief
+     * @brief funcao privada que ler um arquivo e insere na estrutura
+     * as palavras como chaves e a frequencia que ela aparece como valor.
      * 
-     * @param
+     * @param file o arquivo a ser lido
      * 
-     * @return
+     * @param teste a estrutura a qual vai ser inserida as palavra e suas frequencias
      * 
-     * //TODO anotar isso 
+     * 
      */
     void readFile(ifstream &file, Class &teste) {
         string linha;
         string k;
         
+        //uso do unicodeset para posteriormente ser feito um tratamento
+        //mais robusto
         icu::UnicodeString pattern = UNICODE_STRING_SIMPLE("[:L:]"); 
         UErrorCode status = U_ZERO_ERROR;
         icu::UnicodeSet wordChars(pattern, status);
@@ -82,7 +98,6 @@ private:
                     }
                     
                     // Tratamento para hífen
-                    //TODO pensar num tratamento masi robusto para travessão
                     if (u_isalpha(chAfter) && (ch == '-' || ch == 0x2014) && u_isalpha(chBefore)) {
                         cleanWord.append('-');
                     }
@@ -102,10 +117,10 @@ private:
                 
                 cleanWord.toUTF8String(key);
                 if (!key.empty())
-                teste[key]++;
-                //se nao tem if !contains -> insere com valor 0. at ++;
-                icu::UnicodeString keyUni = icu::UnicodeString::fromUTF8(key);
+                //uso do [] que realiza apenas uma busca (find-or-insert)
+                    teste[key]++;
 
+                //configuracao da largura maxima para formatacao
                 size_t lengthCW = cleanWord.length();
                 if(lengthCW > larguraMaxima){
                     larguraMaxima = cleanWord.length();
@@ -115,21 +130,29 @@ private:
         file.close();
     }
 
-
-    //TODO verificar se o relogio da funcao para o que o arquivo pediu
     /**
-     * @brief
+     * @brief função privada que gera o arquivo da frequencia das palavras.
+     * Ao receber um vetor com os pares de palavras e frequencias, ele imprime em formato 
+     * amigável e legível com também o tempo em que foi montado a tabela, e as métricas
+     * conforme a estrutura que foi utilizada.
      * 
-     * @param
+     * @param dados vetor previamente tratado contendo as palavras e a frequência delas.
      * 
-     * @return
+     * @param nameFile nome do arquivo de saída para a função, sendo "impressaoDic" por padrão
      * 
-     * //TODO anotar isso 
+     * @param duracao tempo em nanosegundos de execução do arquivo
+     * 
+     * @param temRotacao se a estrutura tem rotações (no caso dos dicionarios que utilizam árvores) ou não, para diferenciar na hora de
+     * montar o cabeçalho com as métricas
+     * 
+     * @param metrica1 quantas comparações de chaves foram feitas
+     * 
+     * @param metrica2 quantas colisões ou rotações foram feitas, conforme se foi usado um dicionario baseado 
+     * em árvore ou em tabela hash
+     *      
      */
     void gerarArquivo(vector<pair<string, int>> dados, string nameFile = "impressaoDic", auto duracao = std::chrono::high_resolution_clock::now(), bool temRotacao = false, size_t metrica1= 0, size_t metrica2 = 0){
         
-        //auto fim = std::chrono::high_resolution_clock::now();
-
 
         //tratamento do nome do arquivo
         if(nameFile == "impressaoDic" || nameFile.empty()){
@@ -151,20 +174,21 @@ private:
             throw std::runtime_error("erro ao abrir o arquivo de frequencia");
 
 
-        //CABECAO DO ARQUIVO
-        //cabeçalho da avl
+        //cabeçalho das tabelas de frequencia
 
-        //auto duracao = fim - inicio;
+        //o objeto duracao agora vira algo que pode ser escrito (manipulado por <<)
         auto duracao_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(duracao);    
-        size_t larguraColuna = larguraMaxima + 4;
+        size_t larguraColuna = larguraMaxima + 4; //usado 4 para melhor formatação
         
+        //cabeçalho para dicionarios que usam as árvores
         if(temRotacao){
             file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
             << "tempo de compilação: " << duracao_ns.count() << " nanosegundos"<< endl
             << "números de comparações de chaves: " << metrica1 << endl
             << "número de rotações:" << metrica2 << endl
             << endl;
-            //cabeçalho da tabela hash
+
+            //cabeçalho para dicionários que usam tabelas hash
         }else{
             file << "A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: " << endl
             << "tempo de compilação: " << duracao_ns.count() << " nanosegundos"<< endl
@@ -172,6 +196,8 @@ private:
             << "número de colisões: " << metrica2 << endl
             << endl;
         }
+
+        //configuração para formatação da tabela
         file << std::left << std::setw(larguraColuna) << "Palavra" << "Frequencia" << endl;
         
         file << string(larguraColuna + 12, '-') << endl;
@@ -195,13 +221,17 @@ private:
 public:
 
     /**
-     * @brief
+     * @brief construtor de frequencia para dicionario que usa open hash. aqui calculamos 
+     * o tempo de execucação, 
+     * assim como utilizamos as funções privadas para ser gerada a tabela de frequencias.
      * 
-     * @param
+     * @param dic dicionario que usa tabela com enderçamento aberto cujo par é (string, int)
      * 
-     * @return
+     * @param file arquivo que vai ser lido para ser gerado a tabela de frequencia
      * 
-     * //TODO anotar isso 
+     * @param nameFile nome do arquivo de saída
+     * 
+     * 
      */
     Frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
@@ -216,7 +246,9 @@ public:
 
         vector<pair<string, int>> vetorDic = dic.vetorize();
 
-            
+        
+        //se não for necessário usar o icu, ordenamos normalmente
+        // o que é menos custoso
         if(ordena){
             IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
 
@@ -226,12 +258,12 @@ public:
                     return comparadorPtBR(a.first, b.first);
                 });
             
-            cout << "foi ordenado por icu" << endl;
+            //cout << "foi ordenado por icu" << endl;
         }else{
             sort(vetorDic.begin(), vetorDic.end());
         }
 
-        //fim da contagem (tabela foi gerada agora vamos só)
+        //fim da contagem (tabela foi gerada agora vamos só formatar em arquivo)
         auto fim = std::chrono::high_resolution_clock::now();
         auto duracao = fim - inicio;
 
@@ -239,14 +271,17 @@ public:
     }
 
     /**
-     * @brief
+     * @brief construtor de frequencia para dicionario que usa chained hash. 
+     * aqui calculamos o tempo de execucação, 
+     * assim como utilizamos as funções privadas para ser gerada a tabela de frequencias.
      * 
-     * @param
+     * @param dic dicionario que usa tabela encadeada cujo par é (string, int)
      * 
-     * @return
+     * @param file arquivo que vai ser lido para ser gerado a tabela de frequencia
      * 
-     * //TODO anotar isso 
-     */
+     * @param nameFile nome do arquivo de saída
+     * 
+     */    
     Frequencia(ChainedHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
         auto inicio = std::chrono::high_resolution_clock::now();
@@ -280,13 +315,17 @@ public:
     }
 
     /**
-     * @brief
+     * @brief construtor de frequencia para dicionário que usa rubro negra.
+     * aqui calculamos o tempo de execucação, 
+     * assim como utilizamos as funções privadas para ser gerada a tabela de frequencias.
      * 
-     * @param
+     * @param dic dicionario que usa árvore rubro negra cujo par é (string, int)
      * 
-     * @return
+     * @param file arquivo que vai ser lido para ser gerado a tabela de frequencia
      * 
-     * //TODO anotar isso 
+     * @param nameFile nome do arquivo de saída
+     * 
+     * 
      */
     Frequencia(MapRb<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
 
@@ -301,13 +340,13 @@ public:
 
         if(ordena){
             //sort com icucomparator
-                IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
+            IcuComparator comparadorPtBR(icu::Locale("pt_BR"));
 
-        std::sort(vetorDic.begin(), vetorDic.end(), 
-            [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
-                // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
-                return comparadorPtBR(a.first, b.first);
-            });    
+            std::sort(vetorDic.begin(), vetorDic.end(), 
+                [&comparadorPtBR](const std::pair<string, int>& a, const std::pair<string, int>& b) {
+                    // A lambda captura o comparador e o usa para comparar as chaves (as palavras)
+                    return comparadorPtBR(a.first, b.first);
+                });    
         }
 
         auto fim = std::chrono::high_resolution_clock::now();
@@ -317,13 +356,15 @@ public:
     }
 
     /**
-     * @brief
+     * @brief construtor de frequencia para dicionario que usa avl. aqui calculamos o tempo de execucação, 
+     * assim como utilizamos as funções privadas para ser gerada a tabela de frequencias.
      * 
-     * @param
+     * @param dic dicionario que usa árvore avl cujo par é (string, int)
      * 
-     * @return
+     * @param file arquivo que vai ser lido para ser gerado a tabela de frequencia
      * 
-     * //TODO anotar isso 
+     * @param nameFile nome do arquivo de saída
+     * 
      */
     Frequencia(MapAvl<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
         auto inicio = std::chrono::high_resolution_clock::now();
