@@ -591,7 +591,7 @@ public:
      * Se a tabela estiver vazia é lançada um throw invalid_argument.
      * 
      * @return vector<pair<Key, Value>> := vetor com pares do mesmo tipo da chave e do valor 
-     * da árvore.
+     * da tabela.
      * 
      */
     std::vector<std::pair<Key, Value>> vetorize(){

@@ -1,7 +1,7 @@
 A ESTRUTURA TEM AS SEGUINTES INFORMAÇÕES: 
-tempo de compilação: 197166684 nanosegundos
-números de comparações de chaves: 58543
-número de colisões: 0
+tempo de compilação: 167010640 nanosegundos
+números de comparações de chaves: 1143543
+número de rotações:7433
 
 Palavra                   Frequencia
 --------------------------------------

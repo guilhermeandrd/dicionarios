@@ -156,12 +156,13 @@ public:
         m_avl.clear();
     }
 
-     /**
-     * @brief
+    /**
+     * @brief cria um vetor da estrutura em ordem simétrica
+     * O vetor já está ordenado, se a estrutura estiver vazia é lançada um throw invalid_argument
      * 
-     * @return
+     * @return vector<pair<Key, Value>> := vetor com pares do mesmo tipo da chave e do valor 
+     * da estrutura.
      * 
-     * //TODO anotar isso 
      */
     std::vector<std::pair<Key, Value>> vetorize(){
         return m_avl.vetorize();

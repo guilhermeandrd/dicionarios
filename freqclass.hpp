@@ -375,11 +375,6 @@ public:
         readFile(file, dic);
 
         vector<pair<string, int>> vetorDic = dic.vetorize();
-
-        ofstream fileOut("teste.dic");
-
-        if(!fileOut.is_open())
-            throw std::runtime_error("arquivo não foi aberto");
         
         if(ordena){
             //sort com icucomparator
