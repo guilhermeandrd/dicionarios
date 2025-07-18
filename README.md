@@ -6,7 +6,7 @@ Projeto desenvolvido como trabalho final para a disciplina de Estrutura de Dados
 
 O projeto inclui as seguintes estruturas de dados:
 
--   Tabela Hash com Encadeamento Separado
+-   Tabela Hash com Encadeamento
 -   Tabela Hash com Endereçamento Aberto
 -   Árvore AVL
 -   Árvore Rubro-Negra
