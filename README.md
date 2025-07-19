@@ -33,12 +33,12 @@ Depois tente:
 Exemplo:
 
 ```bash
- ./meu_programa dicionarioAvl sherlock_holmes.txt sherlockavl.txt
+ ./freq dicionarioAvl sherlock_holmes.txt sherlockavl.txt
 ```
 
 Ou então:
 
 ```bash
-./meu_programa dicionarioAvl sherlock_holmes.txt
+./freq dicionarioAvl sherlock_holmes.txt
 ```
 
