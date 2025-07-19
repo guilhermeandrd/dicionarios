@@ -233,7 +233,7 @@ public:
      * 
      * 
      */
-    Frequencia(OpenHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+    Frequencia(OpenHashMap<string, int> &dic, ifstream &file, string nameFile = "impressaoDic"){
 
         //inicia relogio de contagem
         auto inicio = std::chrono::high_resolution_clock::now();
@@ -282,7 +282,7 @@ public:
      * @param nameFile nome do arquivo de saída
      * 
      */    
-    Frequencia(ChainedHashMap<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+    Frequencia(ChainedHashMap<string, int> &dic, ifstream &file, string nameFile = "impressaoDic"){
 
         auto inicio = std::chrono::high_resolution_clock::now();
 
@@ -327,7 +327,7 @@ public:
      * 
      * 
      */
-    Frequencia(MapRb<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+    Frequencia(MapRb<string, int> &dic, ifstream &file, string nameFile = "impressaoDic"){
 
         auto inicio = std::chrono::high_resolution_clock::now();
 
@@ -366,7 +366,7 @@ public:
      * @param nameFile nome do arquivo de saída
      * 
      */
-    Frequencia(MapAvl<string, int> dic, ifstream &file, string nameFile = "impressaoDic"){
+    Frequencia(MapAvl<string, int> &dic, ifstream &file, string nameFile = "impressaoDic"){
         auto inicio = std::chrono::high_resolution_clock::now();
 
         if(!file.is_open())
